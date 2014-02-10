@@ -35,12 +35,16 @@ set(CPPLINT_ARG_LINELENGTH "--linelength=120")
 
 # list of sources files of the library
 set(ECS_SRC
+ src/Manager.cpp
  src/System.cpp
 )
 source_group(src FILES ${ECS_SRC})
 
 # list of headers
 set(ECS_INC
+ include/ecs/Component.h
+ include/ecs/Entity.h
+ include/ecs/Manager.h
  include/ecs/System.h
 )
 source_group(include FILES ${ECS_INC})
@@ -59,7 +63,7 @@ endif(UNIX AND (CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL 
 
 # Optional additional targets:
 
-option(ECS_RUN_CPPLINT "Run cpplint.py tool for Google C++ StyleGuide." OFF)
+option(ECS_RUN_CPPLINT "Run cpplint.py tool for Google C++ StyleGuide." ON)
 if (ECS_RUN_CPPLINT)
     # add a cpplint target to the "all" target
     add_custom_target(ecs_cpplint

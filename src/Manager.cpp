@@ -1,6 +1,6 @@
 /**
- * @file    System.cpp
- * @brief   A System manages all Entities having all required Components.
+ * @file    Manager.cpp
+ * @brief   Manage associations of Entities and Components.
  *
  * Copyright (c) 2014 Sebastien Rombauts (sebastien.rombauts@gmail.com)
  *
@@ -8,20 +8,16 @@
  * or copy at http://opensource.org/licenses/MIT)
  */
 
-#include "ecs/System.h"
+#include "ecs/Manager.h"
 
 namespace ecs {
 
 
-System::System() {
+Manager::Manager() {
 }
 
-System::~System() {
+Manager::~Manager() {
 }
 
-/* virtual pure to force subclassing by user
-void System::update(float aDeltaTime) {
-}
-*/
 
 } // namespace ecs
