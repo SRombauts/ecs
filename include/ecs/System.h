@@ -15,7 +15,7 @@ namespace ecs {
 /**
  * @brief A System manages any Entity having the required Components.
  *
- * This is a base class that need to be subclassed.
+ * This is a virtual base class that needs to be subclassed.
  */
 class System {
 public:
@@ -29,11 +29,11 @@ public:
     virtual ~System();
 
     /**
-     * @brief Update function
+     * @brief Update function - virtual
      *
-     * @param[in] aDeltaTime  Elpased time since last update call, in seconds.
+     * @param[in] aDeltaTime  Elapsed time since last update call, in seconds.
      */
-    virtual void update(float aDeltaTime);
+    virtual void update(float aDeltaTime) = 0;
 };
 
 

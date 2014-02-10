@@ -19,8 +19,9 @@ System::System() {
 System::~System() {
 }
 
+/* virtual pure to force subclassing by user
 void System::update(float aDeltaTime) {
 }
-
+*/
 
 } // namespace ecs

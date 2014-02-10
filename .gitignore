@@ -1,6 +1,9 @@
 Debug
 Release
 build
+Makefile
+.cproject
+.project
 /ecs
 *.a
 

@@ -49,7 +49,7 @@ source_group(include FILES ${ECS_INC})
 include_directories("${PROJECT_SOURCE_DIR}/include")
 
 # add sources of the wrapper as a "ecs" static library
-add_library (ecs ${ECS_SRC} ${ECS_INC})
+add_library(ecs ${ECS_SRC} ${ECS_INC})
 
 # Position Independant Code for shared librarie
 if(UNIX AND (CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang"))
