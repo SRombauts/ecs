@@ -17,7 +17,10 @@ namespace ecs {
  * @brief A System manages all Entity having all required Component.
  * @ingroup ecs
  *
- * This is a virtual base class that needs to be subclassed.
+ *  A System is a program runing logic and updating data on any Entity holding a certain set of Components.
+ * Systems run repeteadly on all corresponding Entities.
+ *
+ *  This is a virtual base class that needs to be subclassed.
  */
 class System {
 public:

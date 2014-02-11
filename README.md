@@ -5,6 +5,15 @@ ecs
 
 A simple C++ Entity-Component-System library.
 
+### Entity-Component-System
+
+Entity-component-system (ECS) is a software architecture pattern based on the concept of Composition over Inheritance and Data-Driven Programming techniques.
+As such, it is a paradigm orthogonal to Object Oriented Programming.
+
+ - An Entity represents an object, but does not contain any data by its own, nor any logic. It is only defined as an aggregation of Components, processed by associated Systems.
+ - A Component is a data structure that maintain a sub-state of an entity. The state of any Entity can be described by a few standard Components.
+ - A System is a program runing logic and updating data on any Entity holding a certain set of Components. Systems run repeteadly on all corresponding Entities.
+
 ### Continuous Integration
 
 This project is continuously tested under Ubuntu Linux with the gcc and clang compilers

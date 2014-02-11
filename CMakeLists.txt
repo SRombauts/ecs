@@ -15,12 +15,17 @@ if (MSVC)
     set(DEV_NULL                "NUL")
     # disable Visual Studio warnings for fopen() used in the example
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
-elseif (CMAKE_COMPILER_IS_GNUCXX OR ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang"))
+elseif (UNIX)
     set(CPPLINT_ARG_OUTPUT      "--output=eclipse")
     set(CPPCHECK_ARG_TEMPLATE   "--template=gcc")
     set(DEV_NULL                "/dev/null")
-    # GCC flags
-    add_definitions(-rdynamic -fstack-protector-all -Wall -Wextra -pedantic -Weffc++ -Wformat-security -Winit-self -Wswitch-default -Wswitch-enum -Wfloat-equal -Wundef -Wshadow -Wcast-qual -Wconversion -Wlogical-op -Winline -Wsuggest-attribute=pure -Wsuggest-attribute=const)
+    if (CMAKE_COMPILER_IS_GNUCXX)
+        # GCC flags
+        add_definitions(-rdynamic -fstack-protector-all -Wall -Wextra -pedantic -Weffc++ -Wformat-security -Winit-self -Wswitch-default -Wswitch-enum -Wfloat-equal -Wundef -Wshadow -Wcast-qual -Wconversion -Wlogical-op -Winline -Wsuggest-attribute=pure -Wsuggest-attribute=const)
+    elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+        # Clang flags
+        add_definitions(-fstack-protector-all -Wall -Wextra -pedantic -Weffc++ -Wformat-security -Winit-self -Wswitch-default -Wswitch-enum -Wfloat-equal -Wundef -Wshadow -Wcast-qual -Wconversion -Winline)
+    endif ()
     message(STATUS "C++11 activated")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")  # -std=c++11
 endif ()
@@ -68,7 +73,8 @@ if (ECS_RUN_CPPLINT)
     # add a cpplint target to the "all" target
     add_custom_target(ecs_cpplint
      ALL
-     COMMAND python cpplint.py ${CPPLINT_ARG_OUTPUT} ${CPPLINT_ARG_VERBOSE} ${CPPLINT_ARG_LINELENGTH} ${PROJECT_SOURCE_DIR}/${ECS_SRC}  ${PROJECT_SOURCE_DIR}/${ECS_INC}
+     COMMAND python cpplint.py ${CPPLINT_ARG_OUTPUT} ${CPPLINT_ARG_VERBOSE} ${CPPLINT_ARG_LINELENGTH} ${ECS_SRC} ${ECS_INC}
+     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     )
 else()
     message(STATUS "ECS_RUN_CPPLINT OFF")
@@ -79,7 +85,8 @@ if (ECS_RUN_CPPCHECK)
     # add a cppcheck target to the "all" target
     add_custom_target(ecs_cppcheck
      ALL
-     COMMAND cppcheck -j 4 cppcheck --enable=style --quiet ${CPPCHECK_ARG_TEMPLATE} ${PROJECT_SOURCE_DIR}/src
+     COMMAND cppcheck -j 4 cppcheck --enable=style --quiet ${CPPCHECK_ARG_TEMPLATE} src
+     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     )
 else()
     message(STATUS "ECS_RUN_CPPCHECK OFF")

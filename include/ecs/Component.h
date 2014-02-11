@@ -27,7 +27,10 @@ static const ComponentType _invalidComponentType = 0;
  * @brief A Component keep the data for one aspect of an Entity.
  * @ingroup ecs
  *
- * Every Component class must derived from this struct and define its own/unique positive #ComponentType.
+ *  A Component is a data structure that maintain a sub-state of an entity.
+ * The state of any Entity can be described by a few standard Components.
+ *
+ *  Every Component class must derived from this struct and define its own/unique positive #ComponentType.
  */
 struct Component {
 
