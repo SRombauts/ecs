@@ -13,7 +13,10 @@
 namespace ecs {
 
 
-Manager::Manager() {
+Manager::Manager() :
+    mEntities(),
+    mSystems(),
+    mComponents() {
 }
 
 Manager::~Manager() {
