@@ -31,4 +31,5 @@ or copy at http://opensource.org/licenses/MIT)
 ## See also:
 
  - [Entity Component System on Wikipedia](http://en.wikipedia.org/wiki/Entity_component_system)
+ - [Nytro Game Engine DevBlog](http://blog.7thfactor.com/?p=436)
  - [libes](https://github.com/jube/libes)
