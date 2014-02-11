@@ -1,6 +1,7 @@
 /**
  * @file    System.cpp
- * @brief   A System manages all Entities having all required Components.
+ * @ingroup ecs
+ * @brief   A ecs::System manages all ecs::Entity having all required ecs::Component.
  *
  * Copyright (c) 2014 Sebastien Rombauts (sebastien.rombauts@gmail.com)
  *

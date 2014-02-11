@@ -1,6 +1,7 @@
 /**
  * @file    Component.h
- * @brief   A Component keep the data for one aspect of an Entity.
+ * @ingroup ecs
+ * @brief   A ecs::Component keep the data for one aspect of an ecs::Entity.
  *
  * Copyright (c) 2014 Sebastien Rombauts (sebastien.rombauts@gmail.com)
  *
@@ -14,6 +15,7 @@ namespace ecs {
 
 /**
  * @brief A ComponentType is a positive ID referencing a game object.
+ * @ingroup ecs
  */
 typedef unsigned int ComponentType;
 
@@ -23,8 +25,9 @@ static const ComponentType _invalidComponentType = 0;
 
 /**
  * @brief A Component keep the data for one aspect of an Entity.
+ * @ingroup ecs
  *
- * Every Component class must derived from this struct and define its own/unique positive ComponentType.
+ * Every Component class must derived from this struct and define its own/unique positive #ComponentType.
  */
 struct Component {
 

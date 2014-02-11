@@ -1,6 +1,7 @@
 /**
  * @file    Manager.cpp
- * @brief   Manage associations of Entities and Components.
+ * @ingroup ecs
+ * @brief   Manage associations of ecs::Entity, ecs::Component and ecs::System.
  *
  * Copyright (c) 2014 Sebastien Rombauts (sebastien.rombauts@gmail.com)
  *
