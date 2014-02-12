@@ -10,8 +10,12 @@
  */
 #pragma once
 
-namespace ecs {
+#include <ecs/ComponentType.h>
 
+#include <set>
+#include <memory>
+
+namespace ecs {
 
 /**
  * @brief A System manages all Entity having all required Component.
@@ -24,6 +28,9 @@ namespace ecs {
  */
 class System {
 public:
+    /// Shared pointer to a System
+    typedef std::shared_ptr<System> Ptr;
+
     /**
      * @brief Constructor
      */
@@ -41,8 +48,10 @@ public:
     virtual void update(float aDeltaTime) = 0;
 
 private:
-    // std::set<ComponentType> mRequiredComponents
+    /**
+     * @brief List the Types of all the Components requiered by the System.
+     */
+    ComponentTypeSet    mRequiredComponents;
 };
-
 
 } // namespace ecs

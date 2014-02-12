@@ -9,10 +9,9 @@
  * or copy at http://opensource.org/licenses/MIT)
  */
 
-#include "ecs/Manager.h"
+#include <ecs/Manager.h>
 
 namespace ecs {
-
 
 Manager::Manager() :
     mEntities(),
@@ -22,6 +21,5 @@ Manager::Manager() :
 
 Manager::~Manager() {
 }
-
 
 } // namespace ecs

@@ -48,17 +48,27 @@ source_group(src FILES ${ECS_SRC})
 # list of headers
 set(ECS_INC
  include/ecs/Component.h
+ include/ecs/ComponentType.h
+ include/ecs/ComponentStore.h
  include/ecs/Entity.h
  include/ecs/Manager.h
  include/ecs/System.h
 )
 source_group(include FILES ${ECS_INC})
 
+# list of doc files of the library
+set(ECS_DOC
+ README.md
+ LICENSE.txt
+ src/ecs.dox
+)
+source_group(doc FILES ${ECS_DOC})
+
 # All includes are relative to the "include" directory 
 include_directories("${PROJECT_SOURCE_DIR}/include")
 
 # add sources of the wrapper as a "ecs" static library
-add_library(ecs ${ECS_SRC} ${ECS_INC})
+add_library(ecs ${ECS_SRC} ${ECS_INC} ${ECS_DOC})
 
 # Position Independant Code for shared librarie
 if(UNIX AND (CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang"))

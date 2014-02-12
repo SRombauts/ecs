@@ -10,21 +10,12 @@
  */
 #pragma once
 
+#include <ecs/ComponentType.h>
+
 namespace ecs {
 
-
 /**
- * @brief A ComponentType is a positive ID referencing a game object.
- * @ingroup ecs
- */
-typedef unsigned int ComponentType;
-
-/// ComponentType are strictly positive IDs.
-static const ComponentType _invalidComponentType = 0;
-
-
-/**
- * @brief A Component keep the data for one aspect of an Entity.
+ * @brief   A Component keep the data for one aspect of an Entity.
  * @ingroup ecs
  *
  *  A Component is a data structure that maintain a sub-state of an entity.
@@ -33,10 +24,8 @@ static const ComponentType _invalidComponentType = 0;
  *  Every Component class must derived from this struct and define its own/unique positive #ComponentType.
  */
 struct Component {
-
     /// Default invalid component type
     static const ComponentType _mType = _invalidComponentType;
 };
-
 
 } // namespace ecs

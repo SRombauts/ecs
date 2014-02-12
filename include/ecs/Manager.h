@@ -10,11 +10,14 @@
  */
 #pragma once
 
-#include "ecs/Entity.h"
-#include "ecs/Component.h"
-#include "ecs/System.h"
+#include <ecs/Entity.h>
+#include <ecs/Component.h>
+#include <ecs/ComponentType.h>
+#include <ecs/ComponentStore.h>
+#include <ecs/System.h>
 
-#include <map>
+#include <unordered_map>
+#include <unordered_set>
 #include <set>
 #include <vector>
 #include <memory>   // std::shared_ptr
@@ -24,7 +27,6 @@
  * @ingroup ecs
  */
 namespace ecs {
-
 
 /**
  * @brief   Manage associations of Entity, Component and System.
@@ -42,29 +44,26 @@ public:
     virtual ~Manager();
 
 private:
-    /// Map of all registered entities with the type of their components
-    std::map<Entity, std::set<ComponentType>>               mEntities;
-    /// List of all Systems
-    std::vector<std::shared_ptr<System>>                    mSystems;
-    /// Map of all Components by type and Entity
-    std::map<ComponentType, std::map<Entity, Component>>    mComponents;
+    /**
+     * @brief Hashmap of all registered entities, listing the Type of their Components.
+     *
+     * This only associates the ID of each Entity with Types of all it Components.
+     */
+    std::unordered_map<Entity, ComponentTypeSet>        mEntities;
+
+    /**
+     * @brief Hashmap of all Components by type and Entity.
+     *
+     * Store Component of each Entity, by ComponentType.
+     */
+    std::unordered_map<ComponentType, ComponentStore>   mComponents;
+
+    /**
+     * @brief List of all Systems, ordered by insertion (first created, first executed).
+     *
+     * If a pointer to a System is inserted twice, it is executed twice.
+     */
+    std::vector<System::Ptr>                            mSystems;
 };
 
-
 } // namespace ecs
-
-
-/**
- * @defgroup ecs ecs
- * @brief    A simple C++ Entity-Component-System library.
- */
-/**
- * @dir     src
- * @brief   Source directory of the #ecs library.
- * @ingroup ecs
- */
-/**
- * @dir     include
- * @brief   Include directory of the #ecs library.
- * @ingroup ecs
- */

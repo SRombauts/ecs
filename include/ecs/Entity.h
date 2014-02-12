@@ -12,9 +12,8 @@
 
 namespace ecs {
 
-
 /**
- * @brief An Entity is a positive ID referencing a game object. Its data are in Components, and logic in Systems.
+ * @brief   An Entity is a positive ID referencing a game object. Its data are in Components, and logic in Systems.
  * @ingroup ecs
  *
  *  An Entity represents an object, but does not contain any data by its own, nor any logic.
@@ -22,8 +21,10 @@ namespace ecs {
  */
 typedef unsigned int Entity;
 
-/// Entities are strictly positive IDs.
+/**
+ * @brief   Entities are strictly positive IDs.
+ * @ingroup ecs
+ */
 static const Entity _invalidEntity = 0;
-
 
 } // namespace ecs

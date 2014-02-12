@@ -9,10 +9,9 @@
  * or copy at http://opensource.org/licenses/MIT)
  */
 
-#include "ecs/System.h"
+#include <ecs/System.h>
 
 namespace ecs {
-
 
 System::System() {
 }
