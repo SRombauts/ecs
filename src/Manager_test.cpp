@@ -1,6 +1,6 @@
 /**
  * @file    Manager_test.cpp
- * @ingroup ecs
+ * @ingroup ecs_test
  * @brief   Test of the Entity-Component-System manager.
  *
  * Copyright (c) 2014 Sebastien Rombauts (sebastien.rombauts@gmail.com)
@@ -12,7 +12,6 @@
 #include <ecs/Manager.h>
 
 #include <gtest/gtest.h>
-
 
 // Test Manager::createEntity().
 TEST(Manager, createEntity) {

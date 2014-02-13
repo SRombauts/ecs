@@ -64,7 +64,7 @@ private:
      *
      * Store Component of each Entity, by ComponentType.
      */
-    std::unordered_map<ComponentType, ComponentStore>   mComponents;
+    std::unordered_map<ComponentType, ComponentStoreBase*>   mComponents;
 
     /**
      * @brief List of all Systems, ordered by insertion (first created, first executed).

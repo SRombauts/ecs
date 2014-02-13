@@ -59,6 +59,7 @@ source_group(include FILES ${ECS_INC})
 # list of test files of the library
 set(ECS_TEST
  src/Manager_test.cpp
+ src/ComponentStore_test.cpp
 )
 source_group(src FILES ${ECS_SRC})
 
