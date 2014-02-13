@@ -21,6 +21,8 @@
 #include <set>
 #include <vector>
 #include <memory>   // std::shared_ptr
+#include <cassert>
+#include <limits>
 
 /**
  * @brief   A simple C++ Entity-Component-System library.
@@ -34,20 +36,26 @@ namespace ecs {
  */
 class Manager {
 public:
-    /**
-     * @brief Constructor
-     */
+    /// Constructor
     Manager();
-    /**
-     * @brief Destructor
-     */
+    /// Destructor
     virtual ~Manager();
 
+    /**
+     * @brief   Create a new Entity - simply allocate an new Id.
+     *
+     * @return  Id of the new Entity
+     */
+    inline Entity createEntity();
+
 private:
+    /// Id of the last created Entity (start with invalid Id 0).
+    Entity                                              mLastEntity;
+
     /**
      * @brief Hashmap of all registered entities, listing the Type of their Components.
      *
-     * This only associates the ID of each Entity with Types of all it Components.
+     * This only associates the Id of each Entity with Types of all it Components.
      */
     std::unordered_map<Entity, ComponentTypeSet>        mEntities;
 
@@ -65,5 +73,12 @@ private:
      */
     std::vector<System::Ptr>                            mSystems;
 };
+
+
+inline Entity Manager::createEntity() {
+    assert(mLastEntity < std::numeric_limits<Entity>::max());
+    return (++mLastEntity);
+}
+
 
 } // namespace ecs

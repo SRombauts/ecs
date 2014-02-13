@@ -45,7 +45,7 @@ set(ECS_SRC
 )
 source_group(src FILES ${ECS_SRC})
 
-# list of headers
+# list of header files
 set(ECS_INC
  include/ecs/Component.h
  include/ecs/ComponentType.h
@@ -55,6 +55,12 @@ set(ECS_INC
  include/ecs/System.h
 )
 source_group(include FILES ${ECS_INC})
+
+# list of test files of the library
+set(ECS_TEST
+ src/Manager_test.cpp
+)
+source_group(src FILES ${ECS_SRC})
 
 # list of doc files of the library
 set(ECS_DOC
@@ -121,16 +127,29 @@ endif()
 
 option(ECS_RUN_TESTS "Run test tools." ON)
 if (ECS_RUN_TESTS)
-    # TODO
-    # add the example executable, linked with the wrapper library
-    #add_executable(example examples/main.cpp)
-    #target_link_libraries(example ecs)
+    if (MSVC)
+        # Specific flags for gtest lib
+        set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
+        set(CMAKE_CXX_FLAGS_DEBUG   "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
+    endif (MSVC)    
+
+    # add the subdirectory containing the CMakeLists.txt for the gtest library
+    add_subdirectory (googletest) 
+    include_directories ("${PROJECT_SOURCE_DIR}/googletest/include")
+
+    # add the unit test executable
+    add_executable (ecs_test ${ECS_TEST})
+    target_link_libraries (ecs_test gtest_main ecs)
 
     # add a "test" target:
-    #enable_testing()
+    enable_testing()
 
-    # does the example runs successfully?
+    # does the tests pass?
+    add_test (TestsPass ecs_test)
+
+    # TODO does the example runs successfully?
     #add_test(ExampleRun example)
 else()
     message(STATUS "ECS_RUN_TESTS OFF")
 endif()
+

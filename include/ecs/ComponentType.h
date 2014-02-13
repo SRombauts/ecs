@@ -1,7 +1,7 @@
 /**
  * @file    ComponentType.h
  * @ingroup ecs
- * @brief   A ecs::ComponentType is a positive ID referencing a type of ecs::Component.
+ * @brief   A ecs::ComponentType is a positive Id referencing a type of ecs::Component.
  *
  * Copyright (c) 2014 Sebastien Rombauts (sebastien.rombauts@gmail.com)
  *
@@ -15,13 +15,13 @@
 namespace ecs {
 
 /**
- * @brief   A ComponentType is a positive ID referencing a type of Component.
+ * @brief   A ComponentType is a positive Id referencing a type of Component.
  * @ingroup ecs
  */
 typedef unsigned int ComponentType;
 
 /**
- * @brief   ComponentType are strictly positive IDs.
+ * @brief   ComponentType are strictly positive Ids.
  * @ingroup ecs
  */
 static const ComponentType _invalidComponentType = 0;
