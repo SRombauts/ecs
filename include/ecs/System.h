@@ -49,7 +49,7 @@ public:
 
 private:
     /**
-     * @brief List the Types of all the Components requiered by the System.
+     * @brief List the Types of all the Components required by the System.
      */
     ComponentTypeSet    mRequiredComponents;
 };

@@ -21,10 +21,10 @@ elseif (UNIX)
     set(DEV_NULL                "/dev/null")
     if (CMAKE_COMPILER_IS_GNUCXX)
         # GCC flags
-        add_definitions(-rdynamic -fstack-protector-all -Wall -Wextra -pedantic -Weffc++ -Wformat-security -Winit-self -Wswitch-default -Wswitch-enum -Wfloat-equal -Wundef -Wshadow -Wcast-qual -Wconversion -Wlogical-op -Winline -Wsuggest-attribute=pure -Wsuggest-attribute=const)
+        add_definitions(-rdynamic -fstack-protector-all -Wall -Wextra -pedantic -Wformat-security -Winit-self -Wswitch-default -Wswitch-enum -Wfloat-equal -Wshadow -Wcast-qual -Wconversion -Wlogical-op -Winline -Wsuggest-attribute=pure -Wsuggest-attribute=const)
     elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
         # Clang flags
-        add_definitions(-fstack-protector-all -Wall -Wextra -pedantic -Weffc++ -Wformat-security -Winit-self -Wswitch-default -Wswitch-enum -Wfloat-equal -Wundef -Wshadow -Wcast-qual -Wconversion -Winline)
+        add_definitions(-fstack-protector-all -Wall -Wextra -pedantic -Wformat-security -Winit-self -Wswitch-default -Wswitch-enum -Wfloat-equal -Wshadow -Wcast-qual -Wconversion -Winline)
     endif ()
     message(STATUS "C++11 activated")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")  # -std=c++11
@@ -57,9 +57,9 @@ set(ECS_INC
 source_group(include FILES ${ECS_INC})
 
 # list of test files of the library
-set(ECS_TEST
- src/Manager_test.cpp
- src/ComponentStore_test.cpp
+set(ECS_TESTS
+ tests/Manager_test.cpp
+ tests/ComponentStore_test.cpp
 )
 source_group(src FILES ${ECS_SRC})
 
@@ -67,7 +67,7 @@ source_group(src FILES ${ECS_SRC})
 set(ECS_DOC
  README.md
  LICENSE.txt
- src/ecs.dox
+ ecs.dox
 )
 source_group(doc FILES ${ECS_DOC})
 
@@ -139,7 +139,7 @@ if (ECS_RUN_TESTS)
     include_directories ("${PROJECT_SOURCE_DIR}/googletest/include")
 
     # add the unit test executable
-    add_executable (ecs_test ${ECS_TEST})
+    add_executable (ecs_test ${ECS_TESTS})
     target_link_libraries (ecs_test gtest_main ecs)
 
     # add a "test" target:

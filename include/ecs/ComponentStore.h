@@ -44,20 +44,35 @@ public:
     }
 
     /**
-     * @brief Adding an Entity with a Component of ComponentType
+     * @brief Add an Component (of ComponentType corresponding to the store type) associated to an Entity
      *
      * @param[in] aEntity       Id of the Entity with the Component to add
      * @param[in] aComponent    Component of ComponentType to add
      *
-     * @return true if insertion succedded
+     * @return true if insertion succeeded
      */
     inline bool add(Entity aEntity, C&& aComponent) {
         return mStore.insert(std::make_pair(aEntity, aComponent)).second;
     }
 
-    // TODO Remove
+    /**
+     * @brief Remove the specified Component associated to an Entity
+     *
+     * @param[in] aEntity   Id of the Entity to remove
+     *
+     * @return true if finding and removing the Entity succeeded
+     */
+    inline bool remove(Entity aEntity) {
+        return (0 < mStore.erase(aEntity));
+    }
 
-    // TODO Doc
+    /**
+     * @brief Test if the store contains a Component for the specified Entity
+     *
+     * @param[in] aEntity   Id of the Entity to find
+     *
+     * @return true if finding the Entity succeeded
+     */
     inline bool has(Entity aEntity) {
         return (mStore.end() != mStore.find(aEntity));
     }

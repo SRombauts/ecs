@@ -46,7 +46,10 @@ public:
      *
      * @return  Id of the new Entity
      */
-    inline Entity createEntity();
+    inline Entity createEntity() {
+        assert(mLastEntity < std::numeric_limits<Entity>::max());
+        return (++mLastEntity);
+    }
 
 private:
     /// Id of the last created Entity (start with invalid Id 0).
@@ -73,12 +76,5 @@ private:
      */
     std::vector<System::Ptr>                                mSystems;
 };
-
-
-inline Entity Manager::createEntity() {
-    assert(mLastEntity < std::numeric_limits<Entity>::max());
-    return (++mLastEntity);
-}
-
 
 } // namespace ecs
