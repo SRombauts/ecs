@@ -1,7 +1,7 @@
 /**
  * @file    ComponentStore.h
  * @ingroup ecs
- * @brief   A ecs::ComponentStore keep the data of a certain ecs::ComponentType for all concerned Entities.
+ * @brief   A ecs::ComponentStore keep the data of a certain type of ecs::Component for all concerned Entities.
  *
  * Copyright (c) 2014 Sebastien Rombauts (sebastien.rombauts@gmail.com)
  *
@@ -14,6 +14,7 @@
 #include <ecs/Component.h>
 
 #include <unordered_map>
+#include <memory>
 
 namespace ecs {
 
@@ -21,17 +22,20 @@ namespace ecs {
  * @brief   Abstract base class for all templated ComponentStore.
  * @ingroup ecs
  */
-class ComponentStoreBase {
+class IComponentStore {
+public:
+    /// Unique pointer to a ComponentStore
+    typedef std::unique_ptr<IComponentStore> Ptr;
 };
 
 /**
- * @brief   A ComponentStore keep all the data of a certain ComponentType for all concerned Entities.
+ * @brief   A ComponentStore keep all the data of a certain type of Component for all concerned Entities.
  * @ingroup ecs
  *
- * @tparam C    A structure derived from Component, of a certain ComponentType
+ * @tparam C    A structure derived from Component, of a certain type of Component.
  */
 template<typename C>
-class ComponentStore : public ComponentStoreBase {
+class ComponentStore : public IComponentStore {
     static_assert(std::is_base_of<Component, C>::value, "C must derived from the Component struct");
     static_assert(C::_mType != _invalidComponentType, "C must define a valid non-zero _mType");
 
@@ -44,10 +48,10 @@ public:
     }
 
     /**
-     * @brief Add an Component (of ComponentType corresponding to the store type) associated to an Entity
+     * @brief Add an Component (of a certain type Component corresponding to the store type) associated to an Entity.
      *
-     * @param[in] aEntity       Id of the Entity with the Component to add
-     * @param[in] aComponent    Component of ComponentType to add
+     * @param[in] aEntity       Id of the Entity with the Component to add.
+     * @param[in] aComponent    Component of a certain Component to add.
      *
      * @return true if insertion succeeded
      */
@@ -56,22 +60,22 @@ public:
     }
 
     /**
-     * @brief Remove the specified Component associated to an Entity
+     * @brief Remove the specified Component associated to an Entity.
      *
-     * @param[in] aEntity   Id of the Entity to remove
+     * @param[in] aEntity   Id of the Entity to remove.
      *
-     * @return true if finding and removing the Entity succeeded
+     * @return true if finding and removing the Entity succeeded.
      */
     inline bool remove(Entity aEntity) {
         return (0 < mStore.erase(aEntity));
     }
 
     /**
-     * @brief Test if the store contains a Component for the specified Entity
+     * @brief Test if the store contains a Component for the specified Entity.
      *
-     * @param[in] aEntity   Id of the Entity to find
+     * @param[in] aEntity   Id of the Entity to find.
      *
-     * @return true if finding the Entity succeeded
+     * @return true if finding the Entity succeeded.
      */
     inline bool has(Entity aEntity) {
         return (mStore.end() != mStore.find(aEntity));

@@ -51,6 +51,19 @@ public:
         return (++mLastEntity);
     }
 
+    /**
+     * @brief   Create a ComponentStore for a certain type of Component.
+     * @ingroup ecs
+     *
+     * @tparam C    A structure derived from Component, of a certain type of Component.
+     */
+    template<typename C>
+    inline bool createComponentStore() {
+        static_assert(std::is_base_of<Component, C>::value, "C must derived from the Component struct");
+        static_assert(C::_mType != _invalidComponentType, "C must define a valid non-zero _mType");
+        return mComponents.insert(std::make_pair(C::_mType, IComponentStore::Ptr(new ComponentStore<C>()))).second;
+    }
+
 private:
     /// Id of the last created Entity (start with invalid Id 0).
     Entity                                                  mLastEntity;
@@ -67,7 +80,7 @@ private:
      *
      * Store Component of each Entity, by ComponentType.
      */
-    std::unordered_map<ComponentType, ComponentStoreBase*>  mComponents;
+    std::unordered_map<ComponentType, IComponentStore::Ptr> mComponents;
 
     /**
      * @brief List of all Systems, ordered by insertion (first created, first executed).

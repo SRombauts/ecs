@@ -28,20 +28,20 @@ namespace ecs {
  */
 class System {
 public:
-    /// Shared pointer to a System
-    typedef std::shared_ptr<System> Ptr;
+    /// Unique pointer to a System
+    typedef std::unique_ptr<System> Ptr;
 
     /**
-     * @brief Constructor
+     * @brief Constructor.
      */
     System();
     /**
-     * @brief Destructor
+     * @brief Destructor.
      */
     virtual ~System();
 
     /**
-     * @brief Update function - virtual
+     * @brief Update function - virtual.
      *
      * @param[in] aDeltaTime  Elapsed time since last update call, in seconds.
      */

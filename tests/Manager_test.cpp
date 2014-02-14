@@ -13,10 +13,34 @@
 
 #include <gtest/gtest.h>
 
-// Test Manager::createEntity().
+// A test Component
+class ComponentTest1 : public ecs::Component {
+public:
+    static const ecs::ComponentType _mType = 1;
+};
+class ComponentTest1b : public ecs::Component {
+public:
+    static const ecs::ComponentType _mType = 1;
+};
+class ComponentTest2 : public ecs::Component {
+public:
+    static const ecs::ComponentType _mType = 2;
+};
+
+// Creating entities
 TEST(Manager, createEntity) {
     ecs::Manager manager;
     EXPECT_EQ(1, manager.createEntity());
     EXPECT_EQ(2, manager.createEntity());
     EXPECT_EQ(3, manager.createEntity());
+}
+
+// Creating Component stores
+TEST(Manager, createComponentStore) {
+    ecs::Manager manager;
+    EXPECT_TRUE(manager.createComponentStore<ComponentTest1>());
+    EXPECT_FALSE(manager.createComponentStore<ComponentTest1>());
+    EXPECT_FALSE(manager.createComponentStore<ComponentTest1b>());
+    EXPECT_TRUE(manager.createComponentStore<ComponentTest2>());
+    EXPECT_FALSE(manager.createComponentStore<ComponentTest2>());
 }

@@ -15,14 +15,14 @@
 
 #include <gtest/gtest.h>
 
+
 // A test Component
 class ComponentTest1 : public ecs::Component {
 public:
     static const ecs::ComponentType _mType = 1;
 };
 
-
-// Test ComponentStore::hasHadRemove().
+// Adding/removing/testing for presence
 TEST(ComponentStore, hasHadRemove) {
     ecs::ComponentStore<ComponentTest1> store;
     ecs::Entity entity1 = 1;
