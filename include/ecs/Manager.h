@@ -50,28 +50,28 @@ public:
 
 private:
     /// Id of the last created Entity (start with invalid Id 0).
-    Entity                                              mLastEntity;
+    Entity                                                  mLastEntity;
 
     /**
      * @brief Hashmap of all registered entities, listing the Type of their Components.
      *
      * This only associates the Id of each Entity with Types of all it Components.
      */
-    std::unordered_map<Entity, ComponentTypeSet>        mEntities;
+    std::unordered_map<Entity, ComponentTypeSet>            mEntities;
 
     /**
      * @brief Hashmap of all Components by type and Entity.
      *
      * Store Component of each Entity, by ComponentType.
      */
-    std::unordered_map<ComponentType, ComponentStoreBase*>   mComponents;
+    std::unordered_map<ComponentType, ComponentStoreBase*>  mComponents;
 
     /**
      * @brief List of all Systems, ordered by insertion (first created, first executed).
      *
      * If a pointer to a System is inserted twice, it is executed twice.
      */
-    std::vector<System::Ptr>                            mSystems;
+    std::vector<System::Ptr>                                mSystems;
 };
 
 
