@@ -661,7 +661,7 @@ WARN_NO_PARAMDOC       = YES
 # be obtained via FILE_VERSION_FILTER)
 
 # GCC Format:
-WARN_FORMAT            = "$file:$line: $text"
+#WARN_FORMAT           = "$file:$line: $text"
 # Visual Studio Format:
 WARN_FORMAT            = "$file($line): $text"
 
@@ -680,7 +680,7 @@ WARN_LOGFILE           =
 # directories like "/usr/src/myproject". Separate the files or directories 
 # with spaces.
 
-INPUT                  = src include
+INPUT                  = src include ecs.dox
 
 # This tag can be used to specify the character encoding of the source files 
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding, which is 
