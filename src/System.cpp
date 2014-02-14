@@ -13,7 +13,8 @@
 
 namespace ecs {
 
-System::System() {
+System::System() :
+    mRequiredComponents() {
 }
 
 System::~System() {
