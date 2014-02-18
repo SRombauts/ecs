@@ -13,7 +13,7 @@
 
 #include <gtest/gtest.h>
 
-// A test Component
+// Test Components
 class ComponentTest1 : public ecs::Component {
 public:
     static const ecs::ComponentType _mType = 1;
@@ -30,9 +30,9 @@ public:
 // Creating entities
 TEST(Manager, createEntity) {
     ecs::Manager manager;
-    EXPECT_EQ(1, manager.createEntity());
-    EXPECT_EQ(2, manager.createEntity());
-    EXPECT_EQ(3, manager.createEntity());
+    EXPECT_EQ((ecs::Entity)1, manager.createEntity());
+    EXPECT_EQ((ecs::Entity)2, manager.createEntity());
+    EXPECT_EQ((ecs::Entity)3, manager.createEntity());
 }
 
 // Creating Component stores
