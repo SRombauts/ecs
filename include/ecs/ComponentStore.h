@@ -82,7 +82,8 @@ public:
     }
 
 private:
-    std::unordered_map<Entity, C>   mStore;
+    std::unordered_map<Entity, C>   mStore;             ///< Hash map of stored Components
+    static const ComponentType      _mType = C::_mType; ///< Type of stored Components
 };
 
 } // namespace ecs
