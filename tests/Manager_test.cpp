@@ -14,18 +14,23 @@
 #include <gtest/gtest.h>
 
 // Test Components
-class ComponentTest1 : public ecs::Component {
+class ComponentTest1a : public ecs::Component {
 public:
-    static const ecs::ComponentType _mType = 1;
+    static const ecs::ComponentType _mType;
 };
+const ecs::ComponentType ComponentTest1a::_mType = 1;
+
 class ComponentTest1b : public ecs::Component {
 public:
-    static const ecs::ComponentType _mType = 1;
+    static const ecs::ComponentType _mType;
 };
+const ecs::ComponentType ComponentTest1b::_mType = 1;
+
 class ComponentTest2 : public ecs::Component {
 public:
-    static const ecs::ComponentType _mType = 2;
+    static const ecs::ComponentType _mType;
 };
+const ecs::ComponentType ComponentTest2::_mType = 2;
 
 // Creating entities
 TEST(Manager, createEntity) {
@@ -38,8 +43,8 @@ TEST(Manager, createEntity) {
 // Creating Component stores
 TEST(Manager, createComponentStore) {
     ecs::Manager manager;
-    EXPECT_TRUE(manager.createComponentStore<ComponentTest1>());
-    EXPECT_FALSE(manager.createComponentStore<ComponentTest1>());
+    EXPECT_TRUE(manager.createComponentStore<ComponentTest1a>());
+    EXPECT_FALSE(manager.createComponentStore<ComponentTest1a>());
     EXPECT_FALSE(manager.createComponentStore<ComponentTest1b>());
     EXPECT_TRUE(manager.createComponentStore<ComponentTest2>());
     EXPECT_FALSE(manager.createComponentStore<ComponentTest2>());

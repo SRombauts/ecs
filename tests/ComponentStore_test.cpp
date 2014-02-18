@@ -19,8 +19,9 @@
 // A test Component
 class ComponentTest1 : public ecs::Component {
 public:
-    static const ecs::ComponentType _mType = 1;
+    static const ecs::ComponentType _mType;
 };
+const ecs::ComponentType ComponentTest1::_mType = 1;
 
 // Adding/removing/testing for presence
 TEST(ComponentStore, hasHadRemove) {
