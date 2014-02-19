@@ -13,21 +13,18 @@
 
 #include <gtest/gtest.h>
 
-// Test Components
-class ComponentTest1a : public ecs::Component {
-public:
+// A Test Component
+struct ComponentTest1a : public ecs::Component {
     static const ecs::ComponentType _mType;
 };
 const ecs::ComponentType ComponentTest1a::_mType = 1;
-
-class ComponentTest1b : public ecs::Component {
-public:
+// Erroneous component (same type as Test1a)
+struct ComponentTest1b : public ecs::Component {
     static const ecs::ComponentType _mType;
 };
-const ecs::ComponentType ComponentTest1b::_mType = 1;
-
-class ComponentTest2 : public ecs::Component {
-public:
+const ecs::ComponentType ComponentTest1b::_mType = 1; // this is an error
+// A second Component
+struct ComponentTest2 : public ecs::Component {
     static const ecs::ComponentType _mType;
 };
 const ecs::ComponentType ComponentTest2::_mType = 2;

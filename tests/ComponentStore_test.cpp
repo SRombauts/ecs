@@ -17,8 +17,7 @@
 
 
 // A test Component
-class ComponentTest1 : public ecs::Component {
-public:
+struct ComponentTest1 : public ecs::Component {
     static const ecs::ComponentType _mType;
 };
 const ecs::ComponentType ComponentTest1::_mType = 1;

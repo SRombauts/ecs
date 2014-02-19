@@ -5,6 +5,8 @@
 
 mkdir build
 cd build
-@REM generate solution for Visual Studio 2010, and build it
+@REM generate solution for Visual Studio 2010, build it, and run tests
 cmake .. -G "Visual Studio 10"
 cmake --build .
+ctest
+cd ..

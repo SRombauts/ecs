@@ -8,3 +8,4 @@ cd build
 # generate solution for GCC
 cmake ..
 cmake --build .
+ctest

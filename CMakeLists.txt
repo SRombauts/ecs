@@ -8,27 +8,32 @@
 cmake_minimum_required(VERSION 2.6)
 project(ecs)
 
-# Define useful variables to handle OS/Compiler differences
+# Define useful variables to handle OS differences:
+if (WIN32)
+    set(DEV_NULL                "NUL")
+else (WIN32)
+    set(DEV_NULL                "/dev/null")
+endif (WIN32)
+# then Compiler/IDE differences:
 if (MSVC)
     set(CPPLINT_ARG_OUTPUT      "--output=vs7")
     set(CPPCHECK_ARG_TEMPLATE   "--template=vs")
-    set(DEV_NULL                "NUL")
     # disable Visual Studio warnings for fopen() used in the example
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
-elseif (UNIX)
+else (MSVC)
     set(CPPLINT_ARG_OUTPUT      "--output=eclipse")
     set(CPPCHECK_ARG_TEMPLATE   "--template=gcc")
-    set(DEV_NULL                "/dev/null")
     if (CMAKE_COMPILER_IS_GNUCXX)
         # GCC flags
         add_definitions(-rdynamic -fstack-protector-all -Wall -Wextra -pedantic -Wformat-security -Winit-self -Wswitch-default -Wswitch-enum -Wfloat-equal -Wshadow -Wcast-qual -Wconversion -Wlogical-op -Winline -Wsuggest-attribute=pure -Wsuggest-attribute=const)
     elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
         # Clang flags
         add_definitions(-fstack-protector-all -Wall -Wextra -pedantic -Wformat-security -Winit-self -Wswitch-default -Wswitch-enum -Wfloat-equal -Wshadow -Wcast-qual -Wconversion -Winline)
-    endif ()
+    endif (CMAKE_COMPILER_IS_GNUCXX)
     message(STATUS "C++11 activated")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")  # -std=c++11
-endif ()
+endif (MSVC)
+# and then common variables
 set(CPPLINT_ARG_VERBOSE "--verbose=3")
 set(CPPLINT_ARG_LINELENGTH "--linelength=120")
 
@@ -61,7 +66,13 @@ set(ECS_TESTS
  tests/Manager_test.cpp
  tests/ComponentStore_test.cpp
 )
-source_group(src FILES ${ECS_SRC})
+source_group(tests FILES ${ECS_TESTS})
+
+# list of example files of the library
+set(ECS_EXAMPLES
+ examples/basic/basic.cpp
+)
+source_group(basic FILES ${ECS_EXAMPLES})
 
 # list of doc files of the library
 set(ECS_DOC
@@ -93,9 +104,9 @@ if (ECS_RUN_CPPLINT)
      COMMAND python cpplint.py ${CPPLINT_ARG_OUTPUT} ${CPPLINT_ARG_VERBOSE} ${CPPLINT_ARG_LINELENGTH} ${ECS_SRC} ${ECS_INC}
      WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     )
-else()
+else (ECS_RUN_CPPLINT)
     message(STATUS "ECS_RUN_CPPLINT OFF")
-endif()
+endif (ECS_RUN_CPPLINT)
 
 option(ECS_RUN_CPPCHECK "Run cppcheck C++ static analysis tool." ON)
 if (ECS_RUN_CPPCHECK)
@@ -105,9 +116,9 @@ if (ECS_RUN_CPPCHECK)
      COMMAND cppcheck -j 4 cppcheck --enable=style --quiet ${CPPCHECK_ARG_TEMPLATE} src
      WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     )
-else()
+else (ECS_RUN_CPPCHECK)
     message(STATUS "ECS_RUN_CPPCHECK OFF")
-endif()
+endif (ECS_RUN_CPPCHECK)
 
 option(ECS_RUN_DOXYGEN "Run Doxygen C++ documentation tool." ON)
 if (ECS_RUN_DOXYGEN)
@@ -119,15 +130,24 @@ if (ECS_RUN_DOXYGEN)
          COMMAND doxygen Doxyfile > ${DEV_NULL}
          WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
         )
-    else()
+    else(DOXYGEN_FOUND)
         message(STATUS "Doxygen not found")
-    endif()
-else()
+    endif(DOXYGEN_FOUND)
+else(ECS_RUN_DOXYGEN)
     message(STATUS "ECS_RUN_DOXYGEN OFF")
-endif()
+endif(ECS_RUN_DOXYGEN)
 
-option(ECS_RUN_TESTS "Run test tools." ON)
-if (ECS_RUN_TESTS)
+option(ECS_BUILD_EXAMPLES "Build examples." ON)
+if (ECS_BUILD_EXAMPLES)
+    # add the basic example executable
+    add_executable(ecs_example_basic ${ECS_EXAMPLES})
+    target_link_libraries(ecs_example_basic gtest_main ecs)
+else(ECS_BUILD_EXAMPLES)
+    message(STATUS "ECS_BUILD_EXAMPLES OFF")
+endif(ECS_BUILD_EXAMPLES)
+
+option(ECS_BUILD_TESTS "Build and run tests." ON)
+if (ECS_BUILD_TESTS)
     if (MSVC)
         # Specific flags for gtest lib
         set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
@@ -135,22 +155,24 @@ if (ECS_RUN_TESTS)
     endif (MSVC)    
 
     # add the subdirectory containing the CMakeLists.txt for the gtest library
-    add_subdirectory (googletest) 
-    include_directories ("${PROJECT_SOURCE_DIR}/googletest/include")
+    add_subdirectory(googletest) 
+    include_directories("${PROJECT_SOURCE_DIR}/googletest/include")
 
     # add the unit test executable
-    add_executable (ecs_test ${ECS_TESTS})
-    target_link_libraries (ecs_test gtest_main ecs)
+    add_executable(ecs_tests ${ECS_TESTS})
+    target_link_libraries(ecs_tests gtest_main ecs)
 
     # add a "test" target:
     enable_testing()
 
     # does the tests pass?
-    add_test (TestsPass ecs_test)
+    add_test(TestsPass ecs_tests)
 
-    # TODO does the example runs successfully?
-    #add_test(ExampleRun example)
-else()
-    message(STATUS "ECS_RUN_TESTS OFF")
-endif()
+    if (ECS_BUILD_EXAMPLES)
+        # does the example runs successfully?
+        add_test(ExampleRun ecs_example_basic)
+    endif(ECS_BUILD_EXAMPLES)
+else(ECS_BUILD_TESTS)
+    message(STATUS "ECS_BUILD_TESTS OFF")
+endif(ECS_BUILD_TESTS)
 
