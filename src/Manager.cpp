@@ -16,7 +16,7 @@ namespace ecs {
 Manager::Manager() :
     mLastEntity(_invalidEntity),
     mEntities(),
-    mComponents(),
+    mComponentStores(),
     mSystems() {
 }
 

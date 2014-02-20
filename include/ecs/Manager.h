@@ -16,13 +16,14 @@
 #include <ecs/ComponentStore.h>
 #include <ecs/System.h>
 
+#include <map>
 #include <unordered_map>
-#include <unordered_set>
 #include <set>
 #include <vector>
 #include <memory>   // std::shared_ptr
 #include <cassert>
 #include <limits>
+#include <stdexcept>
 
 /**
  * @brief   A simple C++ Entity-Component-System library.
@@ -42,16 +43,6 @@ public:
     virtual ~Manager();
 
     /**
-     * @brief   Create a new Entity - simply allocate an new Id.
-     *
-     * @return  Id of the new Entity
-     */
-    inline Entity createEntity() {
-        assert(mLastEntity < std::numeric_limits<Entity>::max());
-        return (++mLastEntity);
-    }
-
-    /**
      * @brief   Create a ComponentStore for a certain type of Component.
      * @ingroup ecs
      *
@@ -61,33 +52,64 @@ public:
     inline bool createComponentStore() {
         static_assert(std::is_base_of<Component, C>::value, "C must derived from the Component struct");
         static_assert(C::_mType != _invalidComponentType, "C must define a valid non-zero _mType");
-        return mComponents.insert(std::make_pair(C::_mType, IComponentStore::Ptr(new ComponentStore<C>()))).second;
+        return mComponentStores.insert(std::make_pair(C::_mType, IComponentStore::Ptr(new ComponentStore<C>()))).second;
+    }
+
+    /**
+     * @brief   Find the ComponentStore of a certain type of Component.
+     * @ingroup ecs
+     *
+     * @tparam C    A structure derived from Component, of a certain type of Component.
+     *
+     * Throw if the ComponentStore does not exist.
+     */
+    template<typename C>
+    inline IComponentStore& findComponentStore() {
+        static_assert(std::is_base_of<Component, C>::value, "C must derived from the Component struct");
+        static_assert(C::_mType != _invalidComponentType, "C must define a valid non-zero _mType");
+        auto iComponentStore = mComponentStores.find(C::_mType);
+        if (mComponentStores.end() == iComponentStore) {
+            throw std::runtime_error("The ComponentStore does not exist");
+        }
+        return *(iComponentStore->second);
+    }
+
+    /**
+     * @brief   Create a new Entity - simply allocate an new Id.
+     *
+     * @return  Id of the new Entity
+     */
+    inline Entity createEntity() {
+        assert(mLastEntity < std::numeric_limits<Entity>::max());
+        return (++mLastEntity);
     }
 
 private:
     /// Id of the last created Entity (start with invalid Id 0).
-    Entity                                                  mLastEntity;
+    Entity                                          mLastEntity;
 
     /**
      * @brief Hashmap of all registered entities, listing the Type of their Components.
      *
-     * This only associates the Id of each Entity with Types of all it Components.
+     *  This only associates the Id of each Entity with Types of all it Components.
+     * Using a hashmap, since the number of Entities can be very high.
      */
-    std::unordered_map<Entity, ComponentTypeSet>            mEntities;
+    std::unordered_map<Entity, ComponentTypeSet>    mEntities;
 
     /**
-     * @brief Hashmap of all Components by type and Entity.
+     * @brief Map of all Components by type and Entity.
      *
-     * Store Component of each Entity, by ComponentType.
+     *  Store all Components of each Entity, by ComponentType.
+     * Using a standard map, since the number of ComponentType does not usualy grow very high.
      */
-    std::unordered_map<ComponentType, IComponentStore::Ptr> mComponents;
+    std::map<ComponentType, IComponentStore::Ptr>   mComponentStores;
 
     /**
      * @brief List of all Systems, ordered by insertion (first created, first executed).
      *
      * If a pointer to a System is inserted twice, it is executed twice.
      */
-    std::vector<System::Ptr>                                mSystems;
+    std::vector<System::Ptr>                        mSystems;
 };
 
 } // namespace ecs

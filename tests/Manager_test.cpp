@@ -46,3 +46,14 @@ TEST(Manager, createComponentStore) {
     EXPECT_TRUE(manager.createComponentStore<ComponentTest2>());
     EXPECT_FALSE(manager.createComponentStore<ComponentTest2>());
 }
+
+// Finding Component stores
+TEST(Manager, findComponentStore) {
+    ecs::Manager manager;
+    EXPECT_THROW(manager.findComponentStore<ComponentTest1a>(), std::runtime_error);
+    EXPECT_TRUE(manager.createComponentStore<ComponentTest1a>());
+    EXPECT_NO_THROW(manager.findComponentStore<ComponentTest1a>());
+    EXPECT_THROW(manager.findComponentStore<ComponentTest2>(), std::runtime_error);
+    EXPECT_TRUE(manager.createComponentStore<ComponentTest2>());
+    EXPECT_NO_THROW(manager.findComponentStore<ComponentTest2>());
+}
