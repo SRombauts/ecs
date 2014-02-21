@@ -80,8 +80,9 @@ TEST(ComponentStore, hasHadRemove) {
     EXPECT_EQ(789, store.get(entity1).m);
     EXPECT_NO_THROW(store.get(entity2));
     EXPECT_EQ(456, store.get(entity2).m);
-    // Remove the component of the first Entity
-    EXPECT_TRUE(store.remove(entity1));
+    // Extract the component of the first Entity
+    ComponentTest1 component3 = store.extract(entity1);
+    EXPECT_EQ(789, component3.m);
     EXPECT_FALSE(store.has(entity1));
     EXPECT_TRUE(store.has(entity2));
     // Remove the component of the second Entity

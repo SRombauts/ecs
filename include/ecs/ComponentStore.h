@@ -34,7 +34,6 @@ public:
  *
  * @tparam C    A structure derived from Component, of a certain type of Component.
  *
- * @todo Add a ComponentStore::extract() method to move out a Component.
  * @todo Throw instead of returning false in case of error?
  */
 template<typename C>
@@ -93,16 +92,31 @@ public:
     }
 
     /**
-     * @brief Get the Component associated with the specified Entity.
+     * @brief Get access to the Component associated with the specified Entity.
      *
-     *  Throws std::out_of_range exception if the Entity and its associated Component is found.
+     *  Throws std::out_of_range exception if the Entity and its associated Component is not found.
      *
      * @param[in] aEntity   Id of the Entity to find.
      *
-     * @return Reference to the Component associated with the specified Entity (or throw).
+     * @return Reference to the Component associated with the specified Entity (or throws).
      */
     inline C& get(Entity aEntity) {
         return mStore.at(aEntity);
+    }
+
+    /**
+     * @brief Extract (move out) the Component associated with the specified Entity.
+     *
+     *  Throws std::out_of_range exception if the Entity and its associated Component is not found.
+     *
+     * @param[in] aEntity   Id of the Entity to find.
+     *
+     * @return The Component associated with the specified Entity (or throw).
+     */
+    inline C extract(Entity aEntity) {
+        C component = std::move(mStore.at(aEntity));
+        mStore.erase(aEntity);
+        return component;
     }
 
 private:
