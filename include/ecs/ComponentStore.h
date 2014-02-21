@@ -48,19 +48,27 @@ public:
     }
 
     /**
-     * @brief Add an Component (of a certain type Component corresponding to the store type) associated to an Entity.
+     * @brief Add (move) a Component (of the same type as the ComponentStore) associated to an Entity.
+     *
+     *  Move a new Component into the Store, associating it to its Entity.
+     * Using 'rvalue' (using the move semantic of C++11) requires:
+     * - calling add() with 'std::move(component)', for instance;
+     *   store.add(entity1, ComponentTest1(123);
+     * - calling add() with a new temporary 'ComponentXxx(args)', for instance;
+     *   ComponentTest1 component1(123);
+     *   store.add(entity1, std::move(component1));
      *
      * @param[in] aEntity       Id of the Entity with the Component to add.
-     * @param[in] aComponent    Component of a certain Component to add.
+     * @param[in] aComponent    'rvalue' to a new Component (of the store type) to add.
      *
      * @return true if insertion succeeded
      */
-    inline bool add(Entity aEntity, C&& aComponent) {
-        return mStore.insert(std::make_pair(aEntity, aComponent)).second;
+    inline bool add(const Entity aEntity, C&& aComponent) {
+        return mStore.insert(std::make_pair(aEntity, std::move(aComponent))).second;
     }
 
     /**
-     * @brief Remove the specified Component associated to an Entity.
+     * @brief Remove (destroy) the specified Component associated to an Entity.
      *
      * @param[in] aEntity   Id of the Entity to remove.
      *
@@ -75,9 +83,9 @@ public:
      *
      * @param[in] aEntity   Id of the Entity to find.
      *
-     * @return true if finding the Entity succeeded.
+     * @return true if finding the Entity and its associated Component succeeded.
      */
-    inline bool has(Entity aEntity) {
+    inline bool has(Entity aEntity) const {
         return (mStore.end() != mStore.find(aEntity));
     }
 
