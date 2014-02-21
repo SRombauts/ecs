@@ -36,12 +36,17 @@ TEST(ComponentStore, hasHadRemove) {
     // Before any insertion
     EXPECT_FALSE(store.has(entity1));
     EXPECT_FALSE(store.has(entity2));
+    EXPECT_THROW(store.get(entity1), std::out_of_range);
+    EXPECT_THROW(store.get(entity2), std::out_of_range);
     EXPECT_FALSE(store.remove(entity1));
     EXPECT_FALSE(store.remove(entity2));
     // Add a component to the first Entity (using a temporary rvalue)
     EXPECT_TRUE(store.add(entity1, ComponentTest1(123)));
     EXPECT_TRUE(store.has(entity1));
     EXPECT_FALSE(store.has(entity2));
+    EXPECT_NO_THROW(store.get(entity1));
+    EXPECT_EQ(123, store.get(entity1).m);
+    EXPECT_THROW(store.get(entity2), std::out_of_range);
     // Error: A component can be inserted only once for a given Entity
     EXPECT_FALSE(store.add(entity1, ComponentTest1(666)));
     EXPECT_TRUE(store.has(entity1));
@@ -51,6 +56,10 @@ TEST(ComponentStore, hasHadRemove) {
     EXPECT_TRUE(store.add(entity2, std::move(component2)));
     EXPECT_TRUE(store.has(entity1));
     EXPECT_TRUE(store.has(entity2));
+    EXPECT_NO_THROW(store.get(entity1));
+    EXPECT_EQ(123, store.get(entity1).m);
+    EXPECT_NO_THROW(store.get(entity2));
+    EXPECT_EQ(456, store.get(entity2).m);
     // Error: A component can be inserted only once for a given Entity
     EXPECT_FALSE(store.add(entity2, ComponentTest1(666)));
     EXPECT_TRUE(store.has(entity1));
@@ -67,6 +76,10 @@ TEST(ComponentStore, hasHadRemove) {
     EXPECT_TRUE(store.add(entity1, ComponentTest1(789)));
     EXPECT_TRUE(store.has(entity1));
     EXPECT_TRUE(store.has(entity2));
+    EXPECT_NO_THROW(store.get(entity1));
+    EXPECT_EQ(789, store.get(entity1).m);
+    EXPECT_NO_THROW(store.get(entity2));
+    EXPECT_EQ(456, store.get(entity2).m);
     // Remove the component of the first Entity
     EXPECT_TRUE(store.remove(entity1));
     EXPECT_FALSE(store.has(entity1));

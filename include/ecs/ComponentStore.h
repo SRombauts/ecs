@@ -33,6 +33,9 @@ public:
  * @ingroup ecs
  *
  * @tparam C    A structure derived from Component, of a certain type of Component.
+ *
+ * @todo Add a ComponentStore::extract() method to move out a Component.
+ * @todo Throw instead of returning false in case of error?
  */
 template<typename C>
 class ComponentStore : public IComponentStore {
@@ -87,6 +90,19 @@ public:
      */
     inline bool has(Entity aEntity) const {
         return (mStore.end() != mStore.find(aEntity));
+    }
+
+    /**
+     * @brief Get the Component associated with the specified Entity.
+     *
+     *  Throws std::out_of_range exception if the Entity and its associated Component is found.
+     *
+     * @param[in] aEntity   Id of the Entity to find.
+     *
+     * @return Reference to the Component associated with the specified Entity (or throw).
+     */
+    inline C& get(Entity aEntity) {
+        return mStore.at(aEntity);
     }
 
 private:
