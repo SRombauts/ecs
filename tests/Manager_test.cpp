@@ -48,12 +48,21 @@ TEST(Manager, createComponentStore) {
 }
 
 // Finding Component stores
-TEST(Manager, findComponentStore) {
+TEST(Manager, getComponentStore) {
     ecs::Manager manager;
-    EXPECT_THROW(manager.findComponentStore<ComponentTest1a>(), std::runtime_error);
+    EXPECT_THROW(manager.getComponentStore<ComponentTest1a>(), std::runtime_error);
     EXPECT_TRUE(manager.createComponentStore<ComponentTest1a>());
-    EXPECT_NO_THROW(manager.findComponentStore<ComponentTest1a>());
-    EXPECT_THROW(manager.findComponentStore<ComponentTest2>(), std::runtime_error);
+    EXPECT_NO_THROW(manager.getComponentStore<ComponentTest1a>());
+    EXPECT_THROW(manager.getComponentStore<ComponentTest2>(), std::runtime_error);
     EXPECT_TRUE(manager.createComponentStore<ComponentTest2>());
-    EXPECT_NO_THROW(manager.findComponentStore<ComponentTest2>());
+    EXPECT_NO_THROW(manager.getComponentStore<ComponentTest2>());
+}
+
+// Adding Component to stores
+TEST(Manager, addComponent) {
+    ecs::Manager manager;
+    ecs::Entity entity1 = 1;
+    EXPECT_THROW(manager.addComponent<ComponentTest1a>(entity1, ComponentTest1a()), std::runtime_error);
+    EXPECT_TRUE(manager.createComponentStore<ComponentTest1a>());
+    EXPECT_TRUE(manager.addComponent<ComponentTest1a>(entity1, ComponentTest1a()));
 }

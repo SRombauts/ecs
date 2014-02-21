@@ -19,21 +19,33 @@
 struct Position : public ecs::Component {
     static const ecs::ComponentType _mType;
 
-    float x;    // x coordinates
-    float y;    // y coordinates
+    float x;    // x coordinates in meters
+    float y;    // y coordinates in meters
+
+    // Initialize coordinates
+    Position(float aX, float aY) : x(aX), y(aY) {
+    }
 };
 // Component to store a 2d speed
 struct Speed : public ecs::Component {
     static const ecs::ComponentType _mType;
 
-    float vx;   // speed along x coordinates
-    float vy;   // speed along y coordinates
+    float vx;   // speed along x coordinates in m/s
+    float vy;   // speed along y coordinates in m/s
+
+    // Initialize speed coordinates
+    Speed(float aX, float aY) : vx(aX), vy(aY) {
+    }
 };
 // Component to store physical attributes
 struct Physic : public ecs::Component {
     static const ecs::ComponentType _mType;
 
-    float weight;   // weight
+    float weight;   // weight in kgs
+
+    // Initialize weight
+    Physic(float aWeight) : weight(aWeight) {
+    }
 };
 
 const ecs::ComponentType Position::_mType   = 1;
@@ -61,8 +73,11 @@ int main() {
     bRet &= manager.createComponentStore<Speed>();
     bRet &= manager.createComponentStore<Physic>();
 
-    ecs::Entity ball = manager.createEntity();
-// TODO manager.addComponent(ball, Position());
+    ecs::Entity ball1 = manager.createEntity();
+    bRet &= manager.addComponent(ball1, Position(123.0f, 456.0f));
+    bRet &= manager.addComponent(ball1, Speed(1.0f, 0.0f));
+    bRet &= manager.addComponent(ball1, Physic(5.0f));
+    // TODO tell the manager that the entity is complete/can be registered to appropriate Systems
 
     return (bRet?0:1);
 }
