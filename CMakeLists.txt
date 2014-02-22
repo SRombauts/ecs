@@ -85,7 +85,7 @@ source_group(doc FILES ${ECS_DOC})
 # All includes are relative to the "include" directory 
 include_directories("${PROJECT_SOURCE_DIR}/include")
 
-# add sources of the wrapper as a "ecs" static library
+# add sources of the library as a "ecs" static library
 add_library(ecs ${ECS_SRC} ${ECS_INC} ${ECS_DOC})
 
 # Position Independant Code for shared librarie
@@ -166,11 +166,11 @@ if (ECS_BUILD_TESTS)
     enable_testing()
 
     # does the tests pass?
-    add_test(TestsPass ecs_tests)
+    add_test(UnitTests ecs_tests)
 
     if (ECS_BUILD_EXAMPLES)
         # does the example runs successfully?
-        add_test(ExampleRun ecs_example_basic)
+        add_test(BasicExample ecs_example_basic)
     endif(ECS_BUILD_EXAMPLES)
 else(ECS_BUILD_TESTS)
     message(STATUS "ECS_BUILD_TESTS OFF")

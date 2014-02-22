@@ -35,6 +35,10 @@ namespace ecs {
  * @brief   Manage associations of Entity, Component and System.
  * @ingroup ecs
  *
+ * @todo Map ComponentStore by value, not by pointer.
+ * @todo Add a Manager::addSystem() method.
+ * @todo Add a Manager::registerEntity() method.
+ * @todo Wrap createEntity() -> addComponent() -> registerEntity() methods into a Transaction.
  * @todo Throw instead of returning false in case of error?
  */
 class Manager {
@@ -132,6 +136,8 @@ private:
      *
      *  Store all Components of each Entity, by ComponentType.
      * Using a standard map, since the number of ComponentType does not usualy grow very high.
+     *
+     * @todo Map ComponentStore by value, not by pointer.
      */
     std::map<ComponentType, IComponentStore::Ptr>   mComponentStores;
 

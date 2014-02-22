@@ -1,5 +1,5 @@
 /**
- * @mainpage C++ Entity-Component-System library.
+ * @mainpage C++11 Entity-Component-System library.
  *
  * Entity-component-system (ECS) is a software architecture pattern based on the concept of Composition over Inheritance and Data-Driven Programming techniques.
  * As such, it is a paradigm orthogonal to Object Oriented Programming.
@@ -11,7 +11,7 @@
 
 /**
  * @defgroup ecs ecs
- * @brief    A simple C++ Entity-Component-System library.
+ * @brief    A simple C++11 Entity-Component-System library.
  */
 
 /**
