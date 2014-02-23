@@ -13,8 +13,8 @@
 
 namespace ecs {
 
-System::System() :
-    mRequiredComponents() {
+System::System(ComponentTypeSet&& aRequiredComponents) :
+    mRequiredComponents(std::move(aRequiredComponents)) {
 }
 
 System::~System() {

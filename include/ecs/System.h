@@ -33,8 +33,11 @@ public:
 
     /**
      * @brief Constructor.
+     *
+     * @param[in] aRequiredComponents   List the Types of all the Components required by the System.
      */
-    System();
+    explicit System(ComponentTypeSet&& aRequiredComponents);
+
     /**
      * @brief Destructor.
      */
@@ -51,7 +54,7 @@ private:
     /**
      * @brief List the Types of all the Components required by the System.
      */
-    ComponentTypeSet    mRequiredComponents;
+    const ComponentTypeSet  mRequiredComponents;
 };
 
 } // namespace ecs
