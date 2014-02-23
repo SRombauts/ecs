@@ -45,19 +45,19 @@ set(CPPLINT_ARG_LINELENGTH "--linelength=120")
 
 # list of sources files of the library
 set(ECS_SRC
- src/Manager.cpp
- src/System.cpp
+ ${PROJECT_SOURCE_DIR}/src/Manager.cpp
+ ${PROJECT_SOURCE_DIR}/src/System.cpp
 )
 source_group(src FILES ${ECS_SRC})
 
 # list of header files
 set(ECS_INC
- include/ecs/Component.h
- include/ecs/ComponentType.h
- include/ecs/ComponentStore.h
- include/ecs/Entity.h
- include/ecs/Manager.h
- include/ecs/System.h
+ ${PROJECT_SOURCE_DIR}/include/ecs/Component.h
+ ${PROJECT_SOURCE_DIR}/include/ecs/ComponentType.h
+ ${PROJECT_SOURCE_DIR}/include/ecs/ComponentStore.h
+ ${PROJECT_SOURCE_DIR}/include/ecs/Entity.h
+ ${PROJECT_SOURCE_DIR}/include/ecs/Manager.h
+ ${PROJECT_SOURCE_DIR}/include/ecs/System.h
 )
 source_group(include FILES ${ECS_INC})
 
@@ -101,8 +101,7 @@ if (ECS_RUN_CPPLINT)
     # add a cpplint target to the "all" target
     add_custom_target(ecs_cpplint
      ALL
-     COMMAND python cpplint.py ${CPPLINT_ARG_OUTPUT} ${CPPLINT_ARG_VERBOSE} ${CPPLINT_ARG_LINELENGTH} ${ECS_SRC} ${ECS_INC}
-     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+     COMMAND python ${PROJECT_SOURCE_DIR}/cpplint.py ${CPPLINT_ARG_OUTPUT} ${CPPLINT_ARG_VERBOSE} ${CPPLINT_ARG_LINELENGTH} ${ECS_SRC} ${ECS_INC}
     )
 else (ECS_RUN_CPPLINT)
     message(STATUS "ECS_RUN_CPPLINT OFF")
@@ -113,8 +112,7 @@ if (ECS_RUN_CPPCHECK)
     # add a cppcheck target to the "all" target
     add_custom_target(ecs_cppcheck
      ALL
-     COMMAND cppcheck -j 4 cppcheck --enable=style --quiet ${CPPCHECK_ARG_TEMPLATE} src
-     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+     COMMAND cppcheck -j 4 cppcheck --enable=style --quiet ${CPPCHECK_ARG_TEMPLATE} ${PROJECT_SOURCE_DIR}/src
     )
 else (ECS_RUN_CPPCHECK)
     message(STATUS "ECS_RUN_CPPCHECK OFF")
