@@ -27,7 +27,7 @@ typedef unsigned int ComponentType;
 static const ComponentType _invalidComponentType = 0;
 
 /**
- * @brief   List (set) of ComponentType (of an Entity, or required by a System)
+ * @brief   Sorted List (set) of ComponentType (of an Entity, or required by a System)
  * @ingroup ecs
  */
 typedef std::set<ComponentType> ComponentTypeSet;

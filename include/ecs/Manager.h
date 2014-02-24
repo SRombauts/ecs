@@ -37,7 +37,8 @@ namespace ecs {
  *
  * @todo Map ComponentStore by value, not by pointer.
  * @todo Add a Manager::addSystem() method.
- * @todo Add a Manager::registerEntity() method.
+ * @todo Add a Manager::unregisterEntity() method.
+ * @todo Add a Manager::extractComponent() method.
  * @todo Wrap createEntity() -> addComponent() -> registerEntity() methods into a Transaction.
  * @todo Throw instead of returning false in case of error?
  */
@@ -85,12 +86,21 @@ public:
     /**
      * @brief   Create a new Entity - simply allocate an new Id.
      *
-     * @return  Id of the new Entity
+     * @return  Id of the new Entity.
      */
     inline Entity createEntity() {
         assert(mLastEntity < std::numeric_limits<Entity>::max());
         return (++mLastEntity);
     }
+
+    /**
+     * @brief   Register an Entity to all matching Systems.
+     *
+     * @param[in] aEntity   Id of the Entity to register.
+     *
+     * @return  Number of Systems associated to the Entity.
+     */
+    size_t registerEntity(const Entity aEntity);
 
     /**
      * @brief Add (move) a Component (of the same type as the ComponentStore) associated to an Entity.
@@ -119,6 +129,20 @@ public:
         return getComponentStore<C>().add(aEntity, std::move(aComponent));
     }
 
+    /**
+     * @brief Add a pointer to a System.
+     *
+     *  Require a shared pointer (instead of a unique_ptr) to a System to be able to handle multiple entries
+     * into the vector of managed Systems (for multi-execution of a same System).
+     *
+     * @param[in] aSystemPtr    Shared pointer to the System to add.
+     */
+    inline void addSystem(const System::Ptr& aSystemPtr) {
+        // Simply copy the pointer (instead of moving it) to allow for multiple insertion of the same shared pointer.
+        mSystems.push_back(aSystemPtr);
+        // TODO Register the System with existing matching Entities? Or only allow Systems to be added during init?
+    }
+
 private:
     /// Id of the last created Entity (start with invalid Id 0).
     Entity                                          mLastEntity;
@@ -135,7 +159,7 @@ private:
      * @brief Map of all Components by type and Entity.
      *
      *  Store all Components of each Entity, by ComponentType.
-     * Using a standard map, since the number of ComponentType does not usualy grow very high.
+     * Using a standard map, since the number of ComponentType does not usually grow very high.
      *
      * @todo Map ComponentStore by value, not by pointer.
      */
@@ -144,7 +168,7 @@ private:
     /**
      * @brief List of all Systems, ordered by insertion (first created, first executed).
      *
-     * If a pointer to a System is inserted twice, it is executed twice.
+     * If a pointer to a System is inserted twice, it is executed twice in each iteration (in the order of insertion).
      */
     std::vector<System::Ptr>                        mSystems;
 };

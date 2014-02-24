@@ -20,8 +20,22 @@ System::System(ComponentTypeSet&& aRequiredComponents) :
 System::~System() {
 }
 
-/* virtual pure to force subclassing by user
-void System::update(float aDeltaTime) {
+/**
+ * @brief Update function - for all matching Entities.
+ *
+ * @param[in] aDeltaTime  Elapsed time since last update call, in seconds.
+ */
+void System::updateEntities(float aDeltaTime) {
+    for (auto entity  = mMatchingEntities.begin();
+              entity != mMatchingEntities.end();
+            ++entity) {
+        // For each matching Entity, call the specialized System update method.
+        updateEntity(aDeltaTime, *entity);
+    }
+}
+
+/* virtual pure method to be specialized by user classes
+void System::updateEntity(float aDeltaTime, Entity aEntity) {
 }
 */
 

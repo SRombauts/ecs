@@ -24,7 +24,11 @@ namespace ecs {
  */
 class IComponentStore {
 public:
-    /// Unique pointer to a ComponentStore
+    /**
+     * @brief Unique pointer to a ComponentStore
+     *
+     * @todo Remove the use of a pointer => move the ComponentStore into the manager
+     */
     typedef std::unique_ptr<IComponentStore> Ptr;
 };
 
