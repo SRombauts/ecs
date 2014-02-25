@@ -19,7 +19,7 @@
 class SystemTest1 : public ecs::System {
 public:
     SystemTest1() :
-        ecs::System(ecs::ComponentTypeSet()) {
+        ecs::System() {
     }
 
     // Update function - for a given matching Entity - specialized.

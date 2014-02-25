@@ -34,10 +34,8 @@ public:
 
     /**
      * @brief Constructor.
-     *
-     * @param[in] aRequiredComponents   List the Types of all the Components required by the System.
      */
-    explicit System(ComponentTypeSet&& aRequiredComponents);
+    System();
 
     /**
      * @brief Destructor.
@@ -99,16 +97,26 @@ public:
      */
     virtual void updateEntity(float aDeltaTime, Entity aEntity) = 0;
 
+protected:
+    /**
+     * @brief Specify what are required Components of te System.
+     *
+     * @param[in] aRequiredComponents   List the Types of all the Components required by the System.
+     */
+    inline void setRequiredComponents(ComponentTypeSet&& aRequiredComponents) {
+        mRequiredComponents = std::move(aRequiredComponents);
+    }
+
 private:
     /**
      * @brief List the Types of all the Components required by the System.
      */
-    const ComponentTypeSet  mRequiredComponents;
+    ComponentTypeSet    mRequiredComponents;
 
     /**
      * @brief List all the matching Entities having required Components.
      */
-    std::set<Entity>        mMatchingEntities;
+    std::set<Entity>    mMatchingEntities;
 };
 
 } // namespace ecs

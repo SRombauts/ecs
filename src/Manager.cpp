@@ -25,10 +25,22 @@ Manager::Manager() :
 Manager::~Manager() {
 }
 
+// Add a System.
+void Manager::addSystem(const System::Ptr& aSystemPtr) {
+    // Check that required Components are specified
+    if ((!aSystemPtr) || (aSystemPtr->getRequiredComponents().empty())) {
+        throw std::runtime_error("System shall specified required Components");
+    }
+    // Simply copy the pointer (instead of moving it) to allow for multiple insertion of the same shared pointer.
+    mSystems.push_back(aSystemPtr);
+    // TODO Register the System with existing matching Entities? Or only allow Systems to be added during init?
+}
+
 // Register an Entity to all matching Systems.
 size_t Manager::registerEntity(const Entity aEntity) {
     size_t nbAssociatedSystems = 0;
 
+    // TODO throw if no Entity found
     auto entity = mEntities.find(aEntity);
     if (mEntities.end() != entity) {
         auto entityComponents = (*entity).second;

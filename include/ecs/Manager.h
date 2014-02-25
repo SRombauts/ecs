@@ -35,9 +35,10 @@ namespace ecs {
  * @brief   Manage associations of Entity, Component and System.
  * @ingroup ecs
  *
+ * @todo Add a Manager::updateSystems() method.
  * @todo Map ComponentStore by value, not by pointer.
- * @todo Add a Manager::addSystem() method.
  * @todo Add a Manager::unregisterEntity() method.
+ * @todo Add a Manager::destroyEntity() method.
  * @todo Add a Manager::extractComponent() method.
  * @todo Wrap createEntity() -> addComponent() -> registerEntity() methods into a Transaction.
  * @todo Throw instead of returning false in case of error?
@@ -84,23 +85,25 @@ public:
     }
 
     /**
+     * @brief Add a System.
+     *
+     *  Require a shared pointer (instead of a unique_ptr) to a System to be able to handle multiple entries
+     * into the vector of managed Systems (for multi-execution of a same System).
+     *
+     * @param[in] aSystemPtr    Shared pointer to the System to add.
+     */
+    void addSystem(const System::Ptr& aSystemPtr);
+
+    /**
      * @brief   Create a new Entity - simply allocate an new Id.
      *
      * @return  Id of the new Entity.
      */
     inline Entity createEntity() {
         assert(mLastEntity < std::numeric_limits<Entity>::max());
+        mEntities.insert(std::make_pair((mLastEntity + 1), ComponentTypeSet())); // can trow std::bad_alloc
         return (++mLastEntity);
     }
-
-    /**
-     * @brief   Register an Entity to all matching Systems.
-     *
-     * @param[in] aEntity   Id of the Entity to register.
-     *
-     * @return  Number of Systems associated to the Entity.
-     */
-    size_t registerEntity(const Entity aEntity);
 
     /**
      * @brief Add (move) a Component (of the same type as the ComponentStore) associated to an Entity.
@@ -126,22 +129,26 @@ public:
     inline bool addComponent(const Entity aEntity, C&& aComponent) {
         static_assert(std::is_base_of<Component, C>::value, "C must derived from the Component struct");
         static_assert(C::_mType != _invalidComponentType, "C must define a valid non-zero _mType");
+        // TODO deleguate to a private function
+        // TODO throw if no Entity found
+        auto entity = mEntities.find(aEntity);
+        if (mEntities.end() != entity) {
+            (*entity).second.insert(C::_mType);
+        }
         return getComponentStore<C>().add(aEntity, std::move(aComponent));
     }
 
     /**
-     * @brief Add a pointer to a System.
+     * @brief   Register an Entity to all matching Systems.
      *
-     *  Require a shared pointer (instead of a unique_ptr) to a System to be able to handle multiple entries
-     * into the vector of managed Systems (for multi-execution of a same System).
+     *  Systems needed to be added to the manager before registering any Entity.
+     * Components need to be added to the Entity before registering the Entity.
      *
-     * @param[in] aSystemPtr    Shared pointer to the System to add.
+     * @param[in] aEntity   Id of the Entity to register.
+     *
+     * @return  Number of Systems associated to the Entity.
      */
-    inline void addSystem(const System::Ptr& aSystemPtr) {
-        // Simply copy the pointer (instead of moving it) to allow for multiple insertion of the same shared pointer.
-        mSystems.push_back(aSystemPtr);
-        // TODO Register the System with existing matching Entities? Or only allow Systems to be added during init?
-    }
+    size_t registerEntity(const Entity aEntity);
 
 private:
     /// Id of the last created Entity (start with invalid Id 0).

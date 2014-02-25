@@ -28,6 +28,27 @@ struct ComponentTest2 : public ecs::Component {
     static const ecs::ComponentType _mType;
 };
 const ecs::ComponentType ComponentTest2::_mType = 2;
+// A third Component
+struct ComponentTest3 : public ecs::Component {
+    static const ecs::ComponentType _mType;
+};
+const ecs::ComponentType ComponentTest3::_mType = 3;
+
+
+// A test System, requiring ComponentTest1a
+class SystemTest1 : public ecs::System {
+public:
+    SystemTest1() {
+        ecs::ComponentTypeSet requiredComponents;
+        requiredComponents.insert(ComponentTest1a::_mType);
+        setRequiredComponents(std::move(requiredComponents));
+    }
+
+    // Update function - for a given matching Entity - specialized.
+    virtual void updateEntity(float, ecs::Entity) {
+    }
+};
+
 
 // Creating entities
 TEST(Manager, createEntity) {
@@ -62,7 +83,24 @@ TEST(Manager, getComponentStore) {
 TEST(Manager, addComponent) {
     ecs::Manager manager;
     ecs::Entity entity1 = 1;
-    EXPECT_THROW(manager.addComponent<ComponentTest1a>(entity1, ComponentTest1a()), std::runtime_error);
+    EXPECT_THROW(manager.addComponent(entity1, ComponentTest1a()), std::runtime_error);
     EXPECT_TRUE(manager.createComponentStore<ComponentTest1a>());
-    EXPECT_TRUE(manager.addComponent<ComponentTest1a>(entity1, ComponentTest1a()));
+    EXPECT_TRUE(manager.addComponent(entity1, ComponentTest1a()));
+}
+
+// Registering Entity with Systems
+TEST(Manager, registerEntityToSystems) {
+    ecs::Manager manager;
+    EXPECT_TRUE(manager.createComponentStore<ComponentTest1a>());
+    EXPECT_TRUE(manager.createComponentStore<ComponentTest2>());
+
+    // Register Systems
+    manager.addSystem(ecs::System::Ptr(new SystemTest1()));
+
+    // Register Entities
+    ecs::Entity entity1 = manager.createEntity();
+    EXPECT_TRUE(manager.addComponent(entity1, ComponentTest1a()));
+    EXPECT_EQ(1, manager.registerEntity(entity1));
+
+    // TODO Test with combination of multiple Systems
 }
