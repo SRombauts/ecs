@@ -25,9 +25,7 @@ namespace ecs {
  *  A System is a program running logic and updating data on any Entity holding a certain set of Components.
  * Systems run repeatedly on all corresponding Entities.
  *
- *  This is a virtual base class that needs to be subclassed.
- *
- * @todo unregister(aEntity)
+ *  This is a base class that needs to be subclassed.
  */
 class System {
 public:
@@ -47,6 +45,46 @@ public:
     virtual ~System();
 
     /**
+     * @brief Get the Types of all the Components required by the System.
+     */
+    inline const ComponentTypeSet& getRequiredComponents() const {
+        return mRequiredComponents;
+    }
+
+    /**
+     * @brief Register a matching Entity, having all required Components.
+     *
+     * @param[in] aEntity   Matching Entity
+     *
+     * @return true if the Entity has been inserted successfully
+     */
+    inline bool registerEntity(Entity aEntity) {
+        return mMatchingEntities.insert(aEntity).second;
+    }
+
+    /**
+     * @brief Register a matching Entity, having all required Components.
+     *
+     * @param[in] aEntity   Matching Entity
+     *
+     * @return true if the Entity has been removed successfully
+     */
+    inline bool unregisterEntity(Entity aEntity) {
+        return (0 < mMatchingEntities.erase(aEntity));
+    }
+
+    /**
+     * @brief Test if the System has registered this Entity.
+     *
+     * @param[in] aEntity   Id of the Entity to find.
+     *
+     * @return true if finding the Entity succeeded.
+     */
+    inline bool hasEntity(Entity aEntity) const {
+        return (mMatchingEntities.end() != mMatchingEntities.find(aEntity));
+    }
+
+    /**
      * @brief Update function - for all matching Entities.
      *
      * @param[in] aDeltaTime  Elapsed time since last update call, in seconds.
@@ -60,22 +98,6 @@ public:
      * @param[in] aEntity       Matching Entity
      */
     virtual void updateEntity(float aDeltaTime, Entity aEntity) = 0;
-
-    /**
-     * @brief Register a matching Entity, having all required Components.
-     *
-     * @param[in] aEntity   Matching Entity
-     */
-    inline bool registerEntity(Entity aEntity) {
-        return mMatchingEntities.insert(aEntity).second;
-    }
-
-    /**
-     * @brief Get the Types of all the Components required by the System.
-     */
-    inline const ComponentTypeSet& getRequiredComponents() const {
-        return mRequiredComponents;
-    }
 
 private:
     /**

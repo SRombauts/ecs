@@ -65,6 +65,7 @@ source_group(include FILES ${ECS_INC})
 set(ECS_TESTS
  tests/Manager_test.cpp
  tests/ComponentStore_test.cpp
+ tests/System_test.cpp
 )
 source_group(tests FILES ${ECS_TESTS})
 

@@ -40,7 +40,7 @@ size_t Manager::registerEntity(const Entity aEntity) {
             // Check if all Components Required by the System are in the Entity (use sorted sets)
             if (std::includes(entityComponents.begin(), entityComponents.end(),
                               systemRequiredComponents.begin(), systemRequiredComponents.end())) {
-                // TODO : register the matching Entity
+                // Register the matching Entity
                 (*system)->registerEntity(aEntity);
                 ++nbAssociatedSystems;
             }
