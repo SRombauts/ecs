@@ -85,17 +85,19 @@ public:
     /**
      * @brief Update function - for all matching Entities.
      *
-     * @param[in] aDeltaTime  Elapsed time since last update call, in seconds.
+     * @param[in] aElapsedTime  Elapsed time since last update call, in seconds.
+     *
+     * @return Number of updated Entities
      */
-    void updateEntities(float aDeltaTime);
+    size_t updateEntities(float aElapsedTime);
 
     /**
      * @brief Update function - for a given matching Entity - virtual pure.
      *
-     * @param[in] aDeltaTime    Elapsed time since last update call, in seconds.
+     * @param[in] aElapsedTime  Elapsed time since last update call, in seconds.
      * @param[in] aEntity       Matching Entity
      */
-    virtual void updateEntity(float aDeltaTime, Entity aEntity) = 0;
+    virtual void updateEntity(float aElapsedTime, Entity aEntity) = 0;
 
 protected:
     /**

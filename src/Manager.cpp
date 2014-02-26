@@ -62,4 +62,18 @@ size_t Manager::registerEntity(const Entity aEntity) {
     return nbAssociatedSystems;
 }
 
+
+// Update all Entities of all Systems.
+size_t Manager::updateEntities(float abElapsedTime) {
+    size_t nbUpdatedEntities = 0;
+
+    for (auto system  = mSystems.begin();
+              system != mSystems.end();
+            ++system) {
+        nbUpdatedEntities += (*system)->updateEntities(abElapsedTime);
+    }
+
+    return nbUpdatedEntities;
+}
+
 } // namespace ecs

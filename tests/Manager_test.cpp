@@ -100,7 +100,17 @@ TEST(Manager, registerEntityToSystems) {
     // Register Entities
     ecs::Entity entity1 = manager.createEntity();
     EXPECT_TRUE(manager.addComponent(entity1, ComponentTest1a()));
-    EXPECT_EQ(1, manager.registerEntity(entity1));
+    EXPECT_EQ((size_t)1, manager.registerEntity(entity1));
+
+    // Update Systems
+    EXPECT_EQ((size_t)1, manager.updateEntities(0.0167f));
+
+    ecs::Entity entity2 = manager.createEntity();
+    EXPECT_TRUE(manager.addComponent(entity2, ComponentTest1a()));
+    EXPECT_EQ((size_t)1, manager.registerEntity(entity2));
+
+    // Update Systems
+    EXPECT_EQ((size_t)2, manager.updateEntities(0.0167f));
 
     // TODO Test with combination of multiple Systems
 }

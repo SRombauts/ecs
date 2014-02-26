@@ -129,7 +129,6 @@ public:
     inline bool addComponent(const Entity aEntity, C&& aComponent) {
         static_assert(std::is_base_of<Component, C>::value, "C must derived from the Component struct");
         static_assert(C::_mType != _invalidComponentType, "C must define a valid non-zero _mType");
-        // TODO deleguate to a private function
         // TODO throw if no Entity found
         auto entity = mEntities.find(aEntity);
         if (mEntities.end() != entity) {
@@ -149,6 +148,15 @@ public:
      * @return  Number of Systems associated to the Entity.
      */
     size_t registerEntity(const Entity aEntity);
+
+    /**
+     * @brief   Update all Entities of all Systems.
+     *
+     * @param[in] abElapsedTime Elapsed time since last update call, in seconds.
+     *
+     * @return  Number of Entities updated.
+     */
+    size_t updateEntities(float abElapsedTime);
 
 private:
     /// Id of the last created Entity (start with invalid Id 0).

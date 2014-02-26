@@ -22,19 +22,24 @@ System::~System() {
 /**
  * @brief Update function - for all matching Entities.
  *
- * @param[in] aDeltaTime  Elapsed time since last update call, in seconds.
+ * @param[in] aElapsedTime  Elapsed time since last update call, in seconds.
  */
-void System::updateEntities(float aDeltaTime) {
+size_t System::updateEntities(float aElapsedTime) {
+    size_t nbUpdatedEntities = 0;
+
     for (auto entity  = mMatchingEntities.begin();
               entity != mMatchingEntities.end();
             ++entity) {
         // For each matching Entity, call the specialized System update method.
-        updateEntity(aDeltaTime, *entity);
+        updateEntity(aElapsedTime, *entity);
+        ++nbUpdatedEntities;
     }
+
+    return nbUpdatedEntities;
 }
 
 /* virtual pure method to be specialized by user classes
-void System::updateEntity(float aDeltaTime, Entity aEntity) {
+void System::updateEntity(float aElapsedTime, Entity aEntity) {
 }
 */
 
