@@ -18,6 +18,8 @@
 
 namespace ecs {
 
+class Manager;
+
 /**
  * @brief A System manages all Entity having all required Component.
  * @ingroup ecs
@@ -34,8 +36,10 @@ public:
 
     /**
      * @brief Constructor.
+     *
+     * @param[in] aManager  Reference to the manager needed to access Entity Components.
      */
-    System();
+    explicit System(Manager& aManager);
 
     /**
      * @brief Destructor.
@@ -108,6 +112,11 @@ protected:
     inline void setRequiredComponents(ComponentTypeSet&& aRequiredComponents) {
         mRequiredComponents = std::move(aRequiredComponents);
     }
+
+    /**
+     * @brief Reference to the manager needed to access Entity Components.
+     */
+    Manager&            mManager;
 
 private:
     /**

@@ -10,10 +10,12 @@
  */
 
 #include <ecs/System.h>
+#include <ecs/Manager.h>
 
 namespace ecs {
 
-System::System() {
+System::System(Manager& aManager) :
+    mManager(aManager) {
 }
 
 System::~System() {

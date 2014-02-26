@@ -11,6 +11,7 @@
 
 #include <ecs/System.h>
 #include <ecs/Entity.h>
+#include <ecs/Manager.h>
 
 #include <gtest/gtest.h>
 
@@ -18,8 +19,8 @@
 // A test System
 class SystemTest1 : public ecs::System {
 public:
-    SystemTest1() :
-        ecs::System() {
+    SystemTest1(ecs::Manager& aManager) :
+        ecs::System(aManager) {
     }
 
     // Update function - for a given matching Entity - specialized.
@@ -29,7 +30,8 @@ public:
 
 // Adding/removing/testing for presence
 TEST(System, hasHadRemove) {
-    SystemTest1 system;
+    ecs::Manager manager;
+    SystemTest1 system(manager);
     ecs::Entity entity1 = 1;
     ecs::Entity entity2 = 2;
     // Before any insertion
