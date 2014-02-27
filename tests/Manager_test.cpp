@@ -31,6 +31,12 @@ const ecs::ComponentType ComponentTest1b::_mType = 1; // this is an error
 // A second Component
 struct ComponentTest2 : public ecs::Component {
     static const ecs::ComponentType _mType;
+
+    ComponentTest2(float aInitValue1 = 0.0f, float aInitValue2 = 0.0f) : mValue1(aInitValue1), mValue2(aInitValue2) {
+    }
+
+    float mValue1;
+    float mValue2;
 };
 const ecs::ComponentType ComponentTest2::_mType = 2;
 // A third Component
@@ -56,6 +62,25 @@ public:
     }
 };
 
+
+// A test System, requiring ComponentTest1a and ComponentTest2
+class SystemTest2 : public ecs::System {
+public:
+   SystemTest2(ecs::Manager& aManager) :
+        ecs::System(aManager) {
+        ecs::ComponentTypeSet requiredComponents;
+        requiredComponents.insert(ComponentTest1a::_mType);
+        requiredComponents.insert(ComponentTest2::_mType);
+        setRequiredComponents(std::move(requiredComponents));
+    }
+
+    // Update function - for a given matching Entity - specialized.
+    virtual void updateEntity(float, ecs::Entity aEntity) {
+        float value = mManager.getComponentStore<ComponentTest1a>().get(aEntity).mValue;
+        mManager.getComponentStore<ComponentTest2>().get(aEntity).mValue1 += value;
+        mManager.getComponentStore<ComponentTest2>().get(aEntity).mValue2 += value;
+    }
+};
 
 // Creating entities
 TEST(Manager, createEntity) {
@@ -89,10 +114,12 @@ TEST(Manager, getComponentStore) {
 // Adding Component to stores
 TEST(Manager, addComponent) {
     ecs::Manager manager;
-    ecs::Entity entity1 = 1;
+    ecs::Entity entity1 = manager.createEntity();
     EXPECT_THROW(manager.addComponent(entity1, ComponentTest1a()), std::runtime_error);
     EXPECT_TRUE(manager.createComponentStore<ComponentTest1a>());
     EXPECT_TRUE(manager.addComponent(entity1, ComponentTest1a()));
+    ecs::Entity entityUnknown = 666;
+    EXPECT_THROW(manager.addComponent(entityUnknown, ComponentTest1a()), std::runtime_error);
 }
 
 // Registering Entity with Systems
@@ -103,24 +130,40 @@ TEST(Manager, registerEntityToSystems) {
 
     // Register Systems
     manager.addSystem(ecs::System::Ptr(new SystemTest1(manager)));
+    manager.addSystem(ecs::System::Ptr(new SystemTest2(manager)));
 
-    // Register Entities
+    // Register first Entity (matching with System1)
     ecs::Entity entity1 = manager.createEntity();
     EXPECT_TRUE(manager.addComponent(entity1, ComponentTest1a()));
     EXPECT_EQ((size_t)1, manager.registerEntity(entity1));
 
     // Update Systems
-    EXPECT_EQ((size_t)1, manager.updateEntities(0.0167f));
-    EXPECT_EQ(0.0167f, manager.getComponentStore<ComponentTest1a>().get(entity1).mValue);
+    EXPECT_EQ((size_t)1, manager.updateEntities(0.016667f)); // 16.667ms
+    EXPECT_FLOAT_EQ(0.016667f, manager.getComponentStore<ComponentTest1a>().get(entity1).mValue);
 
+
+    // Register second Entity (matching with System1)
     ecs::Entity entity2 = manager.createEntity();
     EXPECT_TRUE(manager.addComponent(entity2, ComponentTest1a()));
     EXPECT_EQ((size_t)1, manager.registerEntity(entity2));
 
     // Update Systems
-    EXPECT_EQ((size_t)2, manager.updateEntities(0.0167f));
-    EXPECT_EQ(2*0.0167f, manager.getComponentStore<ComponentTest1a>().get(entity1).mValue);
-    EXPECT_EQ(0.0167f, manager.getComponentStore<ComponentTest1a>().get(entity2).mValue);
+    EXPECT_EQ((size_t)2, manager.updateEntities(0.016667f)); // 16.667ms
+    EXPECT_FLOAT_EQ(2*0.016667f, manager.getComponentStore<ComponentTest1a>().get(entity1).mValue);
+    EXPECT_FLOAT_EQ(1*0.016667f, manager.getComponentStore<ComponentTest1a>().get(entity2).mValue);
 
-    // TODO Test with combination of multiple Systems
+
+    // Register third Entity (matching with the two System1 & System2)
+    ecs::Entity entity3 = manager.createEntity();
+    EXPECT_TRUE(manager.addComponent(entity3, ComponentTest1a()));
+    EXPECT_TRUE(manager.addComponent(entity3, ComponentTest2()));
+    EXPECT_EQ((size_t)2, manager.registerEntity(entity3));
+
+    // Update Systems
+    EXPECT_EQ((size_t)4, manager.updateEntities(0.016667f)); // 16.667ms
+    EXPECT_FLOAT_EQ(3*0.016667f, manager.getComponentStore<ComponentTest1a>().get(entity1).mValue);
+    EXPECT_FLOAT_EQ(2*0.016667f, manager.getComponentStore<ComponentTest1a>().get(entity2).mValue);
+    EXPECT_FLOAT_EQ(1*0.016667f, manager.getComponentStore<ComponentTest1a>().get(entity3).mValue);
+    EXPECT_FLOAT_EQ(1*0.016667f, manager.getComponentStore<ComponentTest2>().get(entity3).mValue1);
+    EXPECT_FLOAT_EQ(1*0.016667f, manager.getComponentStore<ComponentTest2>().get(entity3).mValue2);
 }

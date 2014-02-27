@@ -26,6 +26,7 @@ Manager::~Manager() {
 }
 
 // Add a System.
+/// @todo Register the System with existing matching Entities? Or only allow Systems to be added during init?
 void Manager::addSystem(const System::Ptr& aSystemPtr) {
     // Check that required Components are specified
     if ((!aSystemPtr) || (aSystemPtr->getRequiredComponents().empty())) {
@@ -33,29 +34,28 @@ void Manager::addSystem(const System::Ptr& aSystemPtr) {
     }
     // Simply copy the pointer (instead of moving it) to allow for multiple insertion of the same shared pointer.
     mSystems.push_back(aSystemPtr);
-    // TODO Register the System with existing matching Entities? Or only allow Systems to be added during init?
 }
 
 // Register an Entity to all matching Systems.
 size_t Manager::registerEntity(const Entity aEntity) {
     size_t nbAssociatedSystems = 0;
 
-    // TODO throw if no Entity found
     auto entity = mEntities.find(aEntity);
-    if (mEntities.end() != entity) {
-        auto entityComponents = (*entity).second;
+    if (mEntities.end() == entity) {
+        throw std::runtime_error("The Entity does not exist");
+    }
+    auto entityComponents = (*entity).second;
 
-        for (auto system  = mSystems.begin();
-                  system != mSystems.end();
-                ++system) {
-            auto systemRequiredComponents = (*system)->getRequiredComponents();
-            // Check if all Components Required by the System are in the Entity (use sorted sets)
-            if (std::includes(entityComponents.begin(), entityComponents.end(),
-                              systemRequiredComponents.begin(), systemRequiredComponents.end())) {
-                // Register the matching Entity
-                (*system)->registerEntity(aEntity);
-                ++nbAssociatedSystems;
-            }
+    for (auto system  = mSystems.begin();
+              system != mSystems.end();
+            ++system) {
+        auto systemRequiredComponents = (*system)->getRequiredComponents();
+        // Check if all Components Required by the System are in the Entity (use sorted sets)
+        if (std::includes(entityComponents.begin(), entityComponents.end(),
+                          systemRequiredComponents.begin(), systemRequiredComponents.end())) {
+            // Register the matching Entity
+            (*system)->registerEntity(aEntity);
+            ++nbAssociatedSystems;
         }
     }
 

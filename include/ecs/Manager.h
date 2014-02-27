@@ -35,7 +35,6 @@ namespace ecs {
  * @brief   Manage associations of Entity, Component and System.
  * @ingroup ecs
  *
- * @todo Add a Manager::updateSystems() method.
  * @todo Map ComponentStore by value, not by pointer.
  * @todo Add a Manager::unregisterEntity() method.
  * @todo Add a Manager::destroyEntity() method.
@@ -108,6 +107,7 @@ public:
     /**
      * @brief Add (move) a Component (of the same type as the ComponentStore) associated to an Entity.
      *
+     *  Throws std::runtime_error if the Entity does not exist.
      *  Throws std::runtime_error if the ComponentStore does not exist.
      *
      *  Move a new Component into the Store, associating it to its Entity.
@@ -129,11 +129,14 @@ public:
     inline bool addComponent(const Entity aEntity, C&& aComponent) {
         static_assert(std::is_base_of<Component, C>::value, "C must derived from the Component struct");
         static_assert(C::_mType != _invalidComponentType, "C must define a valid non-zero _mType");
-        // TODO throw if no Entity found
+        // Access corresponding Entity
         auto entity = mEntities.find(aEntity);
-        if (mEntities.end() != entity) {
-            (*entity).second.insert(C::_mType);
+        if (mEntities.end() == entity) {
+            throw std::runtime_error("The Entity does not exist");
         }
+        // Add the ComponentType to the Entity
+        (*entity).second.insert(C::_mType);
+        // Add the Component to the corresponding Store
         return getComponentStore<C>().add(aEntity, std::move(aComponent));
     }
 
@@ -154,7 +157,7 @@ public:
      *
      * @param[in] abElapsedTime Elapsed time since last update call, in seconds.
      *
-     * @return  Number of Entities updated.
+     * @return  Number update of Entities (an Entity can be updated multiple time by multiple Systems).
      */
     size_t updateEntities(float abElapsedTime);
 
