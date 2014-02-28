@@ -123,6 +123,15 @@ public:
         return component;
     }
 
+    /**
+     * @brief Get access to the underlying Component map.
+     *
+     * @return Reference to the underlying Component map.
+     */
+    inline const std::unordered_map<Entity, C>& getComponents() {
+        return mStore;
+    }
+
 private:
     std::unordered_map<Entity, C>   mStore;             ///< Hash map of stored Components
     static const ComponentType      _mType = C::_mType; ///< Type of stored Components

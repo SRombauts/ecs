@@ -61,11 +61,11 @@ struct Area : public ecs::Component {
     float left;
     float right;
     float top;
-    float down;
+    float bottom;
 
     // Initialize area
     Area(float aLeft, float aRight, float aTop, float aDown) :
-        left(aLeft), right(aRight), top(aTop), down(aDown) {
+        left(aLeft), right(aRight), top(aTop), bottom(aDown) {
     }
 };
 
@@ -104,6 +104,7 @@ public:
         ecs::ComponentTypeSet requiredComponents;
         requiredComponents.insert(Position::_mType);
         requiredComponents.insert(Speed::_mType);
+        requiredComponents.insert(Collidable::_mType);
         setRequiredComponents(std::move(requiredComponents));
     }
 
@@ -111,8 +112,29 @@ public:
     virtual void updateEntity(float aElapsedTime, ecs::Entity aEntity) {
         Speed& speed = mManager.getComponentStore<Speed>().get(aEntity);
         Position& position = mManager.getComponentStore<Position>().get(aEntity);
+        const Collidable& collidable = mManager.getComponentStore<Collidable>().get(aEntity);
 
-        // TODO Detect collision with area limits
+        // Detect collisions with limits of the Area
+        const Area& area = mManager.getComponentStore<Area>().getComponents().begin()->second;
+        if (position.x >= area.right) {
+            position.x -= (position.x - area.right);
+            speed.vx = -speed.vx;
+            std::cout << "Entity #" << aEntity << " Collision(right): (" << position.x << ", " << position.y << ")\n";
+        } else if (position.x <= area.left) {
+            position.x += (area.left - position.x);
+            speed.vx = -speed.vx;
+            std::cout << "Entity #" << aEntity << " Collision(left): (" << position.x << ", " << position.y << ")\n";
+        }
+        if (position.y >= area.top) {
+            position.y -= (position.y - area.top);
+            speed.vy = -speed.vy;
+            std::cout << "Entity #" << aEntity << " Collision(top): (" << position.x << ", " << position.y << ")\n";
+        } else if (position.y <= area.bottom) {
+            position.y += (area.bottom - position.y);
+            speed.vy = -speed.vy;
+            std::cout << "Entity #" << aEntity << " Collision(bottom): (" << position.x << ", " << position.y << ")\n";
+        }
+
         // TODO Detect collision with other entities
     }
 };
@@ -176,17 +198,17 @@ int main() {
         // Create an Entity, with its Components, and register it to appropriate Systems
         ecs::Entity ball = manager.createEntity();
         bRet &= manager.addComponent(ball, Position(0.0f, 0.0f));   // spawn at origin
-        bRet &= manager.addComponent(ball, Speed(static_cast<float>(rand()-RAND_MAX/2)/RAND_MAX,
-                                                 static_cast<float>(rand()-RAND_MAX/2)/RAND_MAX));
+        bRet &= manager.addComponent(ball, Speed(10.0f*(rand()-RAND_MAX/2)/RAND_MAX,
+                                                 10.0f*(rand()-RAND_MAX/2)/RAND_MAX));
         bRet &= manager.addComponent(ball, Collidable(0.05f));      // 10cm wide ball
         nbRegistered += manager.registerEntity(ball);
     }
     std::cout << "Created " << nbRegistered << " Entities\n";
 
-    // Update them a few time, emulating a 60fps update
+    // Update them a few time, emulating a 30fps update
     size_t nbUpdated = 0;
-    for (size_t i = 0; i < 10; ++i) {
-        nbUpdated += manager.updateEntities(0.016667f); // 16.667ms
+    for (size_t i = 0; i < 20; ++i) {
+        nbUpdated += manager.updateEntities(0.032f); // 32ms (30fps)
     }
     std::cout << "Updated them " << nbUpdated << " time\n";
 
