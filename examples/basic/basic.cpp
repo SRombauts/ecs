@@ -3,6 +3,8 @@
  * @ingroup ecs_basic_example
  * @brief   Basic example of the Entity-Component-System manager.
  *
+ * Basic example moving balls with simple collision detection.
+ *
  * Copyright (c) 2014 Sebastien Rombauts (sebastien.rombauts@gmail.com)
  *
  * Distributed under the MIT License (MIT) (See accompanying file LICENSE.txt
@@ -14,6 +16,8 @@
 #include <ecs/Manager.h>
 
 #include <iostream>
+
+#include <cstdlib> // srand, rand
 
 // Component to store a 2d position
 struct Position : public ecs::Component {
@@ -39,20 +43,36 @@ struct Speed : public ecs::Component {
     }
 };
 
-// Component to store physical attributes
-struct Physic : public ecs::Component {
+// Component to detect collisions
+struct Collidable : public ecs::Component {
     static const ecs::ComponentType _mType;
 
-    float mass;   // mass in kilograms
+    float radius;
 
-    // Initialize mass
-    Physic(float aMass) : mass(aMass) {
+    // Initialize radius
+    Collidable(float aRadius) : radius(aRadius) {
+    }
+};
+
+// Component to detect restrict the play area
+struct Area : public ecs::Component {
+    static const ecs::ComponentType _mType;
+
+    float left;
+    float right;
+    float top;
+    float down;
+
+    // Initialize area
+    Area(float aLeft, float aRight, float aTop, float aDown) :
+        left(aLeft), right(aRight), top(aTop), down(aDown) {
     }
 };
 
 const ecs::ComponentType Position::_mType   = 1;
 const ecs::ComponentType Speed::_mType      = 2;
-const ecs::ComponentType Physic::_mType     = 3;
+const ecs::ComponentType Collidable::_mType = 3;
+const ecs::ComponentType Area::_mType       = 4;
 
 
 // A System to update Position with Speed data
@@ -76,7 +96,48 @@ public:
     }
 };
 
+// A System to update Speed and Position with collision detection
+class SystemCollide : public ecs::System {
+public:
+    SystemCollide(ecs::Manager& aManager) :
+        ecs::System(aManager) {
+        ecs::ComponentTypeSet requiredComponents;
+        requiredComponents.insert(Position::_mType);
+        requiredComponents.insert(Speed::_mType);
+        setRequiredComponents(std::move(requiredComponents));
+    }
 
+    // Update Speed with collision detection
+    virtual void updateEntity(float aElapsedTime, ecs::Entity aEntity) {
+        Speed& speed = mManager.getComponentStore<Speed>().get(aEntity);
+        Position& position = mManager.getComponentStore<Position>().get(aEntity);
+
+        // TODO Detect collision with area limits
+        // TODO Detect collision with other entities
+    }
+};
+
+// A System to "draw" (print) the Entity
+class SystemDraw : public ecs::System {
+public:
+    SystemDraw(ecs::Manager& aManager) :
+        ecs::System(aManager) {
+        ecs::ComponentTypeSet requiredComponents;
+        requiredComponents.insert(Position::_mType);
+        setRequiredComponents(std::move(requiredComponents));
+    }
+
+    // "Draw" (print) the Entity
+    virtual void updateEntity(float aElapsedTime, ecs::Entity aEntity) {
+        const Position& position = mManager.getComponentStore<Position>().get(aEntity);
+        std::cout << "Entity #" << aEntity << " (" << position.x << ", " << position.y << ")\n";
+    }
+};
+
+
+/**
+ * Basic example moving balls with simple collision detection.
+ */
 int main() {
     bool bRet = true;
     ecs::Manager manager;
@@ -85,35 +146,46 @@ int main() {
     std::cout << "sizeof(manager)=" << sizeof(manager) << std::endl;
     std::cout << "sizeof(Position)=" << sizeof(Position) << std::endl;
     std::cout << "sizeof(Speed)=" << sizeof(Speed) << std::endl;
-    std::cout << "sizeof(Physic)=" << sizeof(Physic) << std::endl;
+    std::cout << "sizeof(Collidable)=" << sizeof(Collidable) << std::endl;
+    std::cout << "sizeof(Area)=" << sizeof(Area) << std::endl;
 
     // Create all ComponentStore
     bRet &= manager.createComponentStore<Position>();
     bRet &= manager.createComponentStore<Speed>();
-    bRet &= manager.createComponentStore<Physic>();
+    bRet &= manager.createComponentStore<Collidable>();
+    bRet &= manager.createComponentStore<Area>();
 
     std::cout << "sizeof(storePosition)=" << sizeof(manager.getComponentStore<Position>()) << std::endl;
     std::cout << "sizeof(storeSpeed)=" << sizeof(manager.getComponentStore<Speed>()) << std::endl;
-    std::cout << "sizeof(storePhysic)=" << sizeof(manager.getComponentStore<Physic>()) << std::endl;
+    std::cout << "sizeof(storeCollidable)=" << sizeof(manager.getComponentStore<Collidable>()) << std::endl;
+    std::cout << "sizeof(storeArea)=" << sizeof(manager.getComponentStore<Area>()) << std::endl;
 
-    // Create the System
+    // Create the Systems
     manager.addSystem(ecs::System::Ptr(new SystemMove(manager)));
+    manager.addSystem(ecs::System::Ptr(new SystemCollide(manager)));
+    manager.addSystem(ecs::System::Ptr(new SystemDraw(manager)));
 
-    // Create a thousand Entities
+    // Create an Area Entity
+    ecs::Entity area = manager.createEntity();
+    bRet &= manager.addComponent(area, Area(-1.0f, 1.0f, 1.0f, -1.0f));
+    manager.registerEntity(area);
+
+    // Create a few Entities
     size_t nbRegistered = 0;
-    for (size_t i = 0; i < 1000; ++i) {
+    for (size_t i = 0; i < 2; ++i) {
         // Create an Entity, with its Components, and register it to appropriate Systems
         ecs::Entity ball = manager.createEntity();
-        bRet &= manager.addComponent(ball, Position(123.0f, 456.0f));
-        bRet &= manager.addComponent(ball, Speed(1.0f, 0.0f));
-        bRet &= manager.addComponent(ball, Physic(5.0f));
+        bRet &= manager.addComponent(ball, Position(0.0f, 0.0f));   // spawn at origin
+        bRet &= manager.addComponent(ball, Speed(static_cast<float>(rand()-RAND_MAX/2)/RAND_MAX,
+                                                 static_cast<float>(rand()-RAND_MAX/2)/RAND_MAX));
+        bRet &= manager.addComponent(ball, Collidable(0.05f));      // 10cm wide ball
         nbRegistered += manager.registerEntity(ball);
     }
     std::cout << "Created " << nbRegistered << " Entities\n";
 
-    // Update them a thousand time, emulating a 60fps update
+    // Update them a few time, emulating a 60fps update
     size_t nbUpdated = 0;
-    for (size_t i = 0; i < 1000; ++i) {
+    for (size_t i = 0; i < 10; ++i) {
         nbUpdated += manager.updateEntities(0.016667f); // 16.667ms
     }
     std::cout << "Updated them " << nbUpdated << " time\n";
