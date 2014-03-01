@@ -14,6 +14,11 @@ As such, it is a paradigm orthogonal to Object Oriented Programming.
  - A Component is a data structure that maintain a sub-state of an entity. The state of any Entity can be described by a few standard Components.
  - A System is a program runing logic and updating data on any Entity holding a certain set of Components. Systems run repeteadly on all corresponding Entities.
 
+### Goals
+
+Build an efficient, small, simple and easy to use framework, written in modern C++11 but compatible with widespread compilers (Visual Studio 2010 and GCC 4.6).
+Provide full Doxygen documentation, full test coverage and a few samples to show how to use it.
+
 ### Requirements
 
 Developements and tests are done under the following OSs:
