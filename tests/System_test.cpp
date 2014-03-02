@@ -37,8 +37,8 @@ TEST(System, hasHadRemove) {
     // Before any insertion
     EXPECT_FALSE(system.hasEntity(entity1));
     EXPECT_FALSE(system.hasEntity(entity2));
-    EXPECT_FALSE(system.unregisterEntity(entity1));
-    EXPECT_FALSE(system.unregisterEntity(entity2));
+    EXPECT_EQ((size_t)0, system.unregisterEntity(entity1));
+    EXPECT_EQ((size_t)0, system.unregisterEntity(entity2));
     // Add an Entity
     EXPECT_TRUE(system.registerEntity(entity1));
     EXPECT_TRUE(system.hasEntity(entity1));
@@ -56,11 +56,11 @@ TEST(System, hasHadRemove) {
     EXPECT_TRUE(system.hasEntity(entity1));
     EXPECT_TRUE(system.hasEntity(entity2));
     // Remove the first Entity
-    EXPECT_TRUE(system.unregisterEntity(entity1));
+    EXPECT_EQ((size_t)1, system.unregisterEntity(entity1));
     EXPECT_FALSE(system.hasEntity(entity1));
     EXPECT_TRUE(system.hasEntity(entity2));
     // An Entity can be removed only once for a given Entity
-    EXPECT_FALSE(system.unregisterEntity(entity1));
+    EXPECT_EQ((size_t)0, system.unregisterEntity(entity1));
     EXPECT_FALSE(system.hasEntity(entity1));
     EXPECT_TRUE(system.hasEntity(entity2));
     // Insert again the second Entity
@@ -68,11 +68,11 @@ TEST(System, hasHadRemove) {
     EXPECT_TRUE(system.hasEntity(entity1));
     EXPECT_TRUE(system.hasEntity(entity2));
     // Remove the the first Entity
-    EXPECT_TRUE(system.unregisterEntity(entity1));
+    EXPECT_EQ((size_t)1, system.unregisterEntity(entity1));
     EXPECT_FALSE(system.hasEntity(entity1));
     EXPECT_TRUE(system.hasEntity(entity2));
     // Remove the the second Entity
-    EXPECT_TRUE(system.unregisterEntity(entity2));
+    EXPECT_EQ((size_t)1, system.unregisterEntity(entity2));
     EXPECT_FALSE(system.hasEntity(entity1));
     EXPECT_FALSE(system.hasEntity(entity2));
 }

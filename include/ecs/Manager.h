@@ -153,6 +153,15 @@ public:
     size_t registerEntity(const Entity aEntity);
 
     /**
+     * @brief   Unregister an Entity from all matching Systems.
+     *
+     * @param[in] aEntity   Id of the Entity to register.
+     *
+     * @return  Number of Systems unassociated with the Entity.
+     */
+    size_t unregisterEntity(const Entity aEntity);
+
+    /**
      * @brief   Update all Entities of all Systems.
      *
      * @param[in] abElapsedTime Elapsed time since last update call, in seconds.

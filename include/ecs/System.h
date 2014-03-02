@@ -21,13 +21,15 @@ namespace ecs {
 class Manager;
 
 /**
- * @brief A System manages all Entity having all required Component.
+ * @brief A System manages any Entity having all required Component.
  * @ingroup ecs
  *
  *  A System is a program running logic and updating data on any Entity holding a certain set of Components.
  * Systems run repeatedly on all corresponding Entities.
  *
  *  This is a base class that needs to be subclassed.
+ *
+ * @todo Add an additionnal Entity list, matching an other Component list, to work with (for collision for instance)
  */
 class System {
 public:
@@ -69,10 +71,10 @@ public:
      *
      * @param[in] aEntity   Matching Entity
      *
-     * @return true if the Entity has been removed successfully
+     * @return 1 if the Entity has been removed successfully, 0 otherwize
      */
-    inline bool unregisterEntity(Entity aEntity) {
-        return (0 < mMatchingEntities.erase(aEntity));
+    inline size_t unregisterEntity(Entity aEntity) {
+        return mMatchingEntities.erase(aEntity);
     }
 
     /**
@@ -125,7 +127,7 @@ private:
     ComponentTypeSet    mRequiredComponents;
 
     /**
-     * @brief List all the matching Entities having required Components.
+     * @brief List all the matching Entities having required Components for the System.
      */
     std::set<Entity>    mMatchingEntities;
 };

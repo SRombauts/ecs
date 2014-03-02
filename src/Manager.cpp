@@ -46,6 +46,7 @@ size_t Manager::registerEntity(const Entity aEntity) {
     }
     auto entityComponents = (*entity).second;
 
+    // Cycle through all Systems to check which ones can be interested by the Entity
     for (auto system  = mSystems.begin();
               system != mSystems.end();
             ++system) {
@@ -54,6 +55,7 @@ size_t Manager::registerEntity(const Entity aEntity) {
         if (std::includes(entityComponents.begin(), entityComponents.end(),
                           systemRequiredComponents.begin(), systemRequiredComponents.end())) {
             // Register the matching Entity
+            // TODO shall throw in case of failure!
             (*system)->registerEntity(aEntity);
             ++nbAssociatedSystems;
         }
@@ -62,6 +64,26 @@ size_t Manager::registerEntity(const Entity aEntity) {
     return nbAssociatedSystems;
 }
 
+// Unregister an Entity from all matching Systems.
+size_t Manager::unregisterEntity(const Entity aEntity) {
+    size_t nbAssociatedSystems = 0;
+
+    auto entity = mEntities.find(aEntity);
+    if (mEntities.end() == entity) {
+        throw std::runtime_error("The Entity does not exist");
+    }
+    auto entityComponents = (*entity).second;
+
+    // Cycle through all Systems to unregister the Entity
+    for (auto system  = mSystems.begin();
+              system != mSystems.end();
+            ++system) {
+        // Simply try to unregister the matching Entity
+        nbAssociatedSystems += (*system)->unregisterEntity(aEntity);
+    }
+
+    return nbAssociatedSystems;
+}
 
 // Update all Entities of all Systems.
 size_t Manager::updateEntities(float abElapsedTime) {

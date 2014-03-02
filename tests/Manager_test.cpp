@@ -166,4 +166,30 @@ TEST(Manager, registerEntityToSystems) {
     EXPECT_FLOAT_EQ(1*0.016667f, manager.getComponentStore<ComponentTest1a>().get(entity3).mValue);
     EXPECT_FLOAT_EQ(1*0.016667f, manager.getComponentStore<ComponentTest2>().get(entity3).mValue1);
     EXPECT_FLOAT_EQ(1*0.016667f, manager.getComponentStore<ComponentTest2>().get(entity3).mValue2);
+
+
+    // Unregister Entities (updating systems in between, to verfiy unregistrations)
+    EXPECT_EQ((size_t)2, manager.unregisterEntity(entity3));
+    EXPECT_EQ((size_t)2, manager.updateEntities(0.016667f)); // 16.667ms
+    EXPECT_FLOAT_EQ(4*0.016667f, manager.getComponentStore<ComponentTest1a>().get(entity1).mValue);
+    EXPECT_FLOAT_EQ(3*0.016667f, manager.getComponentStore<ComponentTest1a>().get(entity2).mValue);
+    EXPECT_FLOAT_EQ(1*0.016667f, manager.getComponentStore<ComponentTest1a>().get(entity3).mValue);
+    EXPECT_FLOAT_EQ(1*0.016667f, manager.getComponentStore<ComponentTest2>().get(entity3).mValue1);
+    EXPECT_FLOAT_EQ(1*0.016667f, manager.getComponentStore<ComponentTest2>().get(entity3).mValue2);
+
+    EXPECT_EQ((size_t)1, manager.unregisterEntity(entity2));
+    EXPECT_EQ((size_t)1, manager.updateEntities(0.016667f)); // 16.667ms
+    EXPECT_FLOAT_EQ(5*0.016667f, manager.getComponentStore<ComponentTest1a>().get(entity1).mValue);
+    EXPECT_FLOAT_EQ(3*0.016667f, manager.getComponentStore<ComponentTest1a>().get(entity2).mValue);
+    EXPECT_FLOAT_EQ(1*0.016667f, manager.getComponentStore<ComponentTest1a>().get(entity3).mValue);
+    EXPECT_FLOAT_EQ(1*0.016667f, manager.getComponentStore<ComponentTest2>().get(entity3).mValue1);
+    EXPECT_FLOAT_EQ(1*0.016667f, manager.getComponentStore<ComponentTest2>().get(entity3).mValue2);
+
+    EXPECT_EQ((size_t)1, manager.unregisterEntity(entity1));
+    EXPECT_EQ((size_t)0, manager.updateEntities(0.016667f)); // 16.667ms
+    EXPECT_FLOAT_EQ(5*0.016667f, manager.getComponentStore<ComponentTest1a>().get(entity1).mValue);
+    EXPECT_FLOAT_EQ(3*0.016667f, manager.getComponentStore<ComponentTest1a>().get(entity2).mValue);
+    EXPECT_FLOAT_EQ(1*0.016667f, manager.getComponentStore<ComponentTest1a>().get(entity3).mValue);
+    EXPECT_FLOAT_EQ(1*0.016667f, manager.getComponentStore<ComponentTest2>().get(entity3).mValue1);
+    EXPECT_FLOAT_EQ(1*0.016667f, manager.getComponentStore<ComponentTest2>().get(entity3).mValue2);
 }
