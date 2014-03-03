@@ -68,6 +68,8 @@ public:
      * @param[in] aComponent    'rvalue' to a new Component (of the store type) to add.
      *
      * @return true if insertion succeeded
+     *
+     * @todo Throw in case of failure!
      */
     inline bool add(const Entity aEntity, C&& aComponent) {
         return mStore.insert(std::make_pair(aEntity, std::move(aComponent))).second;
