@@ -146,6 +146,7 @@ _ERROR_CATEGORIES = [
   'build/namespaces',
   'build/printf_format',
   'build/storage_class',
+  'build/override',
   'legal/copyright',
   'readability/filename',
   'readability/alt_tokens',
@@ -4055,6 +4056,12 @@ def CheckLanguage(filename, clean_lines, linenum, file_extension,
           '"%s%s" does a copy of "%s" which can be expensive for non simple scalar type.'
           % (match.group(2), match.group(1), match.group(1), match.group(2), match.group(1)) )
 
+  # SRombauts: find non constructor, non pure, virtual methods missing an override or final specifier
+  match = Search(r'virtual', line)
+  if match:
+    if not Search(r'(~|= ?0|override|final|interface)', line):
+      error(filename, linenum, 'build/override', 4,
+            'Considere adding a C++11 "override" specifier (or "final"), or a "interface" comment')
 
 def CheckForNonConstReference(filename, clean_lines, linenum,
                               nesting_state, error):
