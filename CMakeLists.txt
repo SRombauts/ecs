@@ -63,15 +63,15 @@ source_group(include FILES ${ECS_INC})
 
 # list of test files of the library
 set(ECS_TESTS
- tests/Manager_test.cpp
- tests/ComponentStore_test.cpp
- tests/System_test.cpp
+ ${PROJECT_SOURCE_DIR}/tests/Manager_test.cpp
+ ${PROJECT_SOURCE_DIR}/tests/ComponentStore_test.cpp
+ ${PROJECT_SOURCE_DIR}/tests/System_test.cpp
 )
 source_group(tests FILES ${ECS_TESTS})
 
 # list of example files of the library
 set(ECS_EXAMPLES
- examples/basic/basic.cpp
+ ${PROJECT_SOURCE_DIR}/examples/basic/basic.cpp
 )
 source_group(basic FILES ${ECS_EXAMPLES})
 
@@ -102,7 +102,7 @@ if (ECS_RUN_CPPLINT)
     # add a cpplint target to the "all" target
     add_custom_target(ecs_cpplint
      ALL
-     COMMAND python ${PROJECT_SOURCE_DIR}/cpplint.py ${CPPLINT_ARG_OUTPUT} ${CPPLINT_ARG_VERBOSE} ${CPPLINT_ARG_LINELENGTH} ${ECS_SRC} ${ECS_INC}
+     COMMAND python ${PROJECT_SOURCE_DIR}/cpplint.py ${CPPLINT_ARG_OUTPUT} ${CPPLINT_ARG_VERBOSE} ${CPPLINT_ARG_LINELENGTH} ${ECS_SRC} ${ECS_INC} ${ECS_TESTS}
     )
 else (ECS_RUN_CPPLINT)
     message(STATUS "ECS_RUN_CPPLINT OFF")

@@ -99,3 +99,6 @@ size_t Manager::updateEntities(float abElapsedTime) {
 }
 
 } // namespace ecs
+
+
+

@@ -1,5 +1,5 @@
 /**
- * @file    SystemStore_test.cpp
+ * @file    System_test.cpp
  * @ingroup ecs_test
  * @brief   Test of a System.
  *
@@ -19,12 +19,12 @@
 // A test System
 class SystemTest1 : public ecs::System {
 public:
-    SystemTest1(ecs::Manager& aManager) :
+    explicit SystemTest1(ecs::Manager& aManager) :
         ecs::System(aManager) {
     }
 
     // Update function - for a given matching Entity - specialized.
-    virtual void updateEntity(float, ecs::Entity) {
+    virtual void updateEntity(float, ecs::Entity) override {
     }
 };
 
@@ -37,8 +37,8 @@ TEST(System, hasHadRemove) {
     // Before any insertion
     EXPECT_FALSE(system.hasEntity(entity1));
     EXPECT_FALSE(system.hasEntity(entity2));
-    EXPECT_EQ((size_t)0, system.unregisterEntity(entity1));
-    EXPECT_EQ((size_t)0, system.unregisterEntity(entity2));
+    EXPECT_EQ(0U, system.unregisterEntity(entity1));
+    EXPECT_EQ(0U, system.unregisterEntity(entity2));
     // Add an Entity
     EXPECT_TRUE(system.registerEntity(entity1));
     EXPECT_TRUE(system.hasEntity(entity1));
@@ -56,11 +56,11 @@ TEST(System, hasHadRemove) {
     EXPECT_TRUE(system.hasEntity(entity1));
     EXPECT_TRUE(system.hasEntity(entity2));
     // Remove the first Entity
-    EXPECT_EQ((size_t)1, system.unregisterEntity(entity1));
+    EXPECT_EQ(1U, system.unregisterEntity(entity1));
     EXPECT_FALSE(system.hasEntity(entity1));
     EXPECT_TRUE(system.hasEntity(entity2));
     // An Entity can be removed only once for a given Entity
-    EXPECT_EQ((size_t)0, system.unregisterEntity(entity1));
+    EXPECT_EQ(0U, system.unregisterEntity(entity1));
     EXPECT_FALSE(system.hasEntity(entity1));
     EXPECT_TRUE(system.hasEntity(entity2));
     // Insert again the second Entity
@@ -68,11 +68,11 @@ TEST(System, hasHadRemove) {
     EXPECT_TRUE(system.hasEntity(entity1));
     EXPECT_TRUE(system.hasEntity(entity2));
     // Remove the the first Entity
-    EXPECT_EQ((size_t)1, system.unregisterEntity(entity1));
+    EXPECT_EQ(1U, system.unregisterEntity(entity1));
     EXPECT_FALSE(system.hasEntity(entity1));
     EXPECT_TRUE(system.hasEntity(entity2));
     // Remove the the second Entity
-    EXPECT_EQ((size_t)1, system.unregisterEntity(entity2));
+    EXPECT_EQ(1U, system.unregisterEntity(entity2));
     EXPECT_FALSE(system.hasEntity(entity1));
     EXPECT_FALSE(system.hasEntity(entity2));
 }

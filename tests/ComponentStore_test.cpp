@@ -21,7 +21,7 @@ struct ComponentTest1 : public ecs::Component {
     static const ecs::ComponentType _mType;
 
     // A simple test constructor, init the test value
-    ComponentTest1(int a) : m(a) {
+    explicit ComponentTest1(int a) : m(a) {
     }
 
     int m; // A simple test value
