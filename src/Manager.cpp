@@ -55,7 +55,7 @@ size_t Manager::registerEntity(const Entity aEntity) {
         if (std::includes(entityComponents.begin(), entityComponents.end(),
                           systemRequiredComponents.begin(), systemRequiredComponents.end())) {
             // Register the matching Entity
-            // TODO shall throw in case of failure!
+            // TODO(SRombauts) shall throw in case of failure!
             (*system)->registerEntity(aEntity);
             ++nbAssociatedSystems;
         }

@@ -27,6 +27,7 @@ Developements and tests are done under the following OSs:
 - Windows XP/7/8
 And following IDEs/Compilers
 - GCC 4.7.2
+- GCC 4.6.3 with Travis-CI
 - Visual Studio Express 2010/2013 for testing compatibility purpose
 
 ### Continuous Integration

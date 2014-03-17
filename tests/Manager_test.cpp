@@ -11,6 +11,8 @@
 
 #include <ecs/Manager.h>
 
+#include "../src/Utils.h" // defines the "override" identifier if needed (gcc < 4.7)
+
 #include <gtest/gtest.h>
 
 // A Test Component
