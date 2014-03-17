@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2009 Google Inc. All rights reserved.
 #
@@ -146,6 +147,7 @@ _ERROR_CATEGORIES = [
   'build/namespaces',
   'build/printf_format',
   'build/storage_class',
+  'build/nullptr',
   'build/override',
   'legal/copyright',
   'readability/filename',
@@ -4056,12 +4058,21 @@ def CheckLanguage(filename, clean_lines, linenum, file_extension,
           '"%s%s" does a copy of "%s" which can be expensive for non simple scalar type.'
           % (match.group(2), match.group(1), match.group(1), match.group(2), match.group(1)) )
 
+  # SRombauts: Detect usage of NULL macro instead of C++11 nullptr keyword
+  if Search(r'[ =(,]NULL[ ,);]', line):
+    error(filename, linenum, 'build/nullptr', 4, 'Consider using the C++11 nullptr keyword instead of the deprecated NULL macro.')
+  
   # SRombauts: find non constructor, non pure, virtual methods missing an override or final specifier
-  match = Search(r'virtual', line)
+  match = Search(r'virtual.*\(', line)
   if match:
-    if not Search(r'(~|= ?0|override|final|interface)', line):
-      error(filename, linenum, 'build/override', 4,
-            'Considere adding a C++11 "override" specifier (or "final"), or a "interface" comment')
+    # Find the endline of function arguments, to look for "override" specifier or a comment after the closing parenthesis
+    if Search(r'\)', line):
+      end_linenum = linenum
+    else:
+      (end_line, end_linenum, end_pos) = CloseExpression(clean_lines, linenum, line.find('('))
+    if not Search(r'(~|= ?0|override|final|interface)', clean_lines.raw_lines[end_linenum]):
+      error(filename, end_linenum, 'build/override', 4,
+            'Considere adding a C++11 "override" specifier (or "final"), or an "// interface" comment')
 
 def CheckForNonConstReference(filename, clean_lines, linenum,
                               nesting_state, error):
