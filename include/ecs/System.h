@@ -29,7 +29,7 @@ class Manager;
  *
  *  This is a base class that needs to be subclassed.
  *
- * @todo Add an additionnal Entity list, matching an other Component list, to work with (for collision for instance)
+ * @todo Add an additional Entity list, matching an other Component list, to work with (for collision for instance)
  */
 class System {
 public:
